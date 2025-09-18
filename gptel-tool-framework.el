@@ -34,6 +34,14 @@
   :type 'boolean
   :group 'gptel-tool-kit)
 
+(defcustom gptel-tk-tool-prefix ""
+  "Prefix to add to all tool registration names.
+If empty, tools are registered with clean names like 'buffer_search'.
+If set to 'tk_', tools become 'tk_buffer_search', etc.  Useful to avoid
+conflicts with other tool packages."
+  :type 'string
+  :group 'gptel-tool-kit)
+
 ;;; Utility Macros
 
 (defmacro gptel-tk--with-suppressed-messages (&rest body)
@@ -112,6 +120,14 @@ Automatically normalizes any :json-false values to nil in the tool body."
          (gptel-tk--with-normalized-bools ,all-args
            (gptel-tk--with-tool ,tool-name raw-args
              ,@body))))))
+
+;;; Helper Functions
+
+(defun gptel-tk--make-tool-name (base-name)
+  "Create a tool registration name with appropriate prefix.
+BASE-NAME should be the clean tool name (e.g., 'buffer_search').
+Returns the name with gptel-tk-tool-prefix applied."
+  (concat gptel-tk-tool-prefix base-name))
 
 ;;; Filtering and Truncation Functions
 

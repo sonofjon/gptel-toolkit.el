@@ -66,7 +66,7 @@ for the GPTel presets."
 
 ;; Buffers
 
-(gptel-tk-define gptel-tool-buffer-search-regexp (buffer-name regexp &optional include-columns)
+(gptel-tk-define gptel-tk-tool-buffer-search-regexp (buffer-name regexp &optional include-columns)
   "Search for content matching REGEXP in BUFFER-NAME.
 Returns a newline-separated string of matching lines.  Each match is
 formatted as \"LINE:TEXT\" or, if INCLUDE-COLUMNS is non-nil,
@@ -93,7 +93,7 @@ line."
               (mapconcat #'identity (nreverse results) "\n")
             (format "No matches found for regexp: %s" regexp)))))))
 
-(gptel-tk-define gptel-tool-open-file-in-buffer (file-path)
+(gptel-tk-define gptel-tk-tool-open-file-in-buffer (file-path)
   "Open FILE-PATH into a visiting buffer."
   (unless (file-exists-p file-path)
     (error "No such file: %s" file-path))
@@ -103,7 +103,7 @@ line."
               (find-file-noselect file-path))))
     (format "File '%s' opened in buffer '%s'." file-path (buffer-name buf))))
 
-(gptel-tk-define gptel-tool-read-buffer-lines-count (buffer-name &optional start-line count)
+(gptel-tk-define gptel-tk-tool-read-buffer-lines-count (buffer-name &optional start-line count)
   "Read COUNT lines from BUFFER-NAME starting at line START-LINE.
 When START-LINE is nil it defaults to 1.  When COUNT is nil it defaults
 to `gptel-tk-max-lines'.  If COUNT is greater than
@@ -143,7 +143,7 @@ available lines."
                        (line-end-position))))
                 (buffer-substring-no-properties start-pos end-pos)))))))))
 
-(gptel-tk-define gptel-tool-list-buffers (&optional include-counts)
+(gptel-tk-define gptel-tk-tool-list-buffers (&optional include-counts)
   "Return a newline-separated string of open file-backed buffers.
 Each line is of the form \"NAME: PATH\", where NAME is the buffer name
 and PATH is the file path relative to the current project root.  When
@@ -167,7 +167,7 @@ lines)\"."
               (push (format "%s: %s" buf-name path) lines))))))
     (mapconcat #'identity (nreverse lines) "\n")))
 
-(gptel-tk-define gptel-tool-list-all-buffers (&optional include-counts)
+(gptel-tk-define gptel-tk-tool-list-all-buffers (&optional include-counts)
   "Return a newline-separated string of all open buffers.
 Each line is either of the form \"NAME: PATH\" for file-backed buffers
 or just \"NAME\" for non-file buffers.  NAME is the buffer name and PATH
@@ -194,21 +194,21 @@ INCLUDE-COUNTS is non-nil, append the number of lines as \" (N lines)\"."
               (push buf-name lines))))))
     (mapconcat #'identity (nreverse lines) "\n")))
 
-(gptel-tk-define gptel-tool-buffer-to-file (buffer-name)
+(gptel-tk-define gptel-tk-tool-buffer-to-file (buffer-name)
   "Return the file path for BUFFER-NAME."
   (let ((buffer (get-buffer buffer-name)))
     (unless (and buffer (buffer-file-name buffer))
       (error "Buffer '%s' not found or not associated with a file." buffer-name))
     (buffer-file-name buffer)))
 
-(gptel-tk-define gptel-tool-file-to-buffer (file-path)
+(gptel-tk-define gptel-tk-tool-file-to-buffer (file-path)
   "Return the buffer name for FILE-PATH."
   (let ((buffer (find-buffer-visiting file-path)))
     (unless buffer
       (error "No buffer is visiting the file '%s'." file-path))
     (buffer-name buffer)))
 
-(gptel-tk-define gptel-tool-append-to-buffer (buffer-name text)
+(gptel-tk-define gptel-tk-tool-append-to-buffer (buffer-name text)
   "Append TEXT to BUFFER-NAME."
   (let ((buf (get-buffer buffer-name)))
     (unless buf
@@ -219,7 +219,7 @@ INCLUDE-COUNTS is non-nil, append the number of lines as \" (N lines)\"."
         (insert text)))
     (format "Text successfully appended to buffer '%s'." buffer-name)))
 
-(gptel-tk-define gptel-tool-insert-in-buffer (buffer-name text line-number)
+(gptel-tk-define gptel-tk-tool-insert-in-buffer (buffer-name text line-number)
   "Insert TEXT in BUFFER-NAME at LINE-NUMBER.
 The text is inserted at the beginning of the specified line."
   (let ((buf (get-buffer buffer-name)))
@@ -239,7 +239,7 @@ The text is inserted at the beginning of the specified line."
           (insert text))))
     (format "Text successfully inserted into buffer '%s' at line %d." buffer-name line-number)))
 
-(gptel-tk-define gptel-tool-replace-buffer (buffer-name content)
+(gptel-tk-define gptel-tk-tool-replace-buffer (buffer-name content)
   "Overwrite BUFFER-NAME with CONTENT."
   (let ((buf (get-buffer buffer-name)))
     (unless buf
@@ -249,7 +249,7 @@ The text is inserted at the beginning of the specified line."
       (insert content))
     (format "Buffer '%s' successfully modified." buffer-name)))
 
-(gptel-tk-define gptel-tool-edit-buffer-string (buffer-name old-string new-string)
+(gptel-tk-define gptel-tk-tool-edit-buffer-string (buffer-name old-string new-string)
   "Replace a single instance of OLD-STRING with NEW-STRING in BUFFER-NAME."
   (let ((buffer (get-buffer buffer-name)))
     (unless buffer
@@ -269,7 +269,7 @@ The text is inserted at the beginning of the specified line."
             (replace-string old-string new-string)
             (format "String in buffer '%s' successfully replaced." buffer-name))))))))
 
-(gptel-tk-define gptel-tool-replace-buffer-line (buffer-name line-number content)
+(gptel-tk-define gptel-tk-tool-replace-buffer-line (buffer-name line-number content)
   "Replace line LINE-NUMBER in file BUFFER-NAME with CONTENT.
 This wrapper function delegates replacement to
 `gptel-tk-tool-replace-buffer-lines' with START-LINE and END-LINE both
@@ -282,7 +282,7 @@ equal to LINE-NUMBER."
       ;; If not an error, return success message
       (format "Line %d in buffer '%s' successfully replaced." line-number buffer-name))))
 
-(gptel-tk-define gptel-tool-replace-buffer-lines (buffer-name start-line end-line content)
+(gptel-tk-define gptel-tk-tool-replace-buffer-lines (buffer-name start-line end-line content)
   "Replace lines START-LINE through END-LINE in BUFFER-NAME with CONTENT."
   (let ((buf (get-buffer buffer-name)))
     (unless buf
@@ -308,7 +308,7 @@ equal to LINE-NUMBER."
     (format "Line range %d-%d in buffer '%s' successfully replaced."
             start-line end-line buffer-name)))
 
-(gptel-tk-define gptel-tool-delete-buffer-string (buffer-name old-string)
+(gptel-tk-define gptel-tk-tool-delete-buffer-string (buffer-name old-string)
   "Delete a single instance of OLD-STRING in BUFFER-NAME.
 This wrapper function delegates deletion to
 `gptel-tk-tool-edit-buffer-string' by setting NEW-STRING to an empty
@@ -321,7 +321,7 @@ string."
       ;; If not an error, return success message
       (format "String in buffer '%s' successfully deleted." buffer-name))))
 
-(gptel-tk-define gptel-tool-delete-buffer-line (buffer-name line-number)
+(gptel-tk-define gptel-tk-tool-delete-buffer-line (buffer-name line-number)
   "Delete line LINE-NUMBER in BUFFER-NAME.
 This wrapper function delegates deletion to
 `gptel-tk-tool-replace-buffer-line' by setting CONTENT to an empty
@@ -334,7 +334,7 @@ string."
       ;; If not an error, return success message
       (format "Line %d in buffer '%s' successfully deleted." line-number buffer-name))))
 
-(gptel-tk-define gptel-tool-delete-buffer-lines (buffer-name start-line end-line)
+(gptel-tk-define gptel-tk-tool-delete-buffer-lines (buffer-name start-line end-line)
   "Delete lines START-LINE through END-LINE in BUFFER-NAME.
 This wrapper function delegates deletion to
 `gptel-tk-tool-replace-buffer-lines' by setting CONTENT to an empty
@@ -493,7 +493,7 @@ EDIT-TYPE can be 'line or 'string, as described in
              (kill-buffer temp-buffer))
            (signal (car err) (cdr err))))))))
 
-(gptel-tk-define gptel-tool-apply-buffer-string-edits (buffer-name buffer-edits)
+(gptel-tk-define gptel-tk-tool-apply-buffer-string-edits (buffer-name buffer-edits)
   "Edit BUFFER-NAME with a list of string edits.
 BUFFER-EDITS is a list of property lists where each edit must contain
 the keys :line-number (integer), :old-string (string), and
@@ -504,7 +504,7 @@ descending order of :line-number."
   (gptel-tk--apply-buffer-edits buffer-name buffer-edits 'string)
   (format "String edits successfully applied to buffer '%s'." buffer-name))
 
-(gptel-tk-define gptel-tool-apply-buffer-string-edits-with-review (buffer-name buffer-edits)
+(gptel-tk-define gptel-tk-tool-apply-buffer-string-edits-with-review (buffer-name buffer-edits)
   "Edit BUFFER-NAME with a list of string edits and review with Ediff.
 BUFFER-EDITS is a list of property lists where each edit must contain
 the keys :line-number (integer), :old-string (string), and
@@ -515,7 +515,7 @@ buffer only; the original buffer is not modified by this command."
   (gptel-tk--review-buffer-edits buffer-name buffer-edits 'string)
   (format "Ediff session started for %s. Please complete the review." buffer-name))
 
-(gptel-tk-define gptel-tool-apply-buffer-line-edits (buffer-name buffer-edits)
+(gptel-tk-define gptel-tk-tool-apply-buffer-line-edits (buffer-name buffer-edits)
   "Edit BUFFER-NAME with a list of line edits.
 BUFFER-EDITS is a list of property lists where each edit must contain
 the keys :line-number (integer), :old-string (string), and
@@ -525,7 +525,7 @@ applied in descending order of :line-number."
   (gptel-tk--apply-buffer-edits buffer-name buffer-edits 'line)
   (format "Line edits successfully applied to buffer '%s'." buffer-name))
 
-(gptel-tk-define gptel-tool-apply-buffer-line-edits-with-review (buffer-name buffer-edits)
+(gptel-tk-define gptel-tk-tool-apply-buffer-line-edits-with-review (buffer-name buffer-edits)
   "Edit BUFFER-NAME with a list of line edits and review with Ediff.
 BUFFER-EDITS is a list of property lists where each edit must contain
 the keys :line-number (integer), :old-string (string), and
@@ -538,7 +538,7 @@ buffer only; the original buffer is not modified by this command."
 
 ;; Files
 
-(gptel-tk-define gptel-tool-create-file (file-path content)
+(gptel-tk-define gptel-tk-tool-create-file (file-path content)
   "Create a new file at FILE-PATH with CONTENT."
   (let ((full-path (expand-file-name file-path)))
     (when (file-exists-p full-path)
@@ -550,7 +550,7 @@ buffer only; the original buffer is not modified by this command."
         (write-file full-path)))
     (format "Successfully created file: %s" full-path)))
 
-(gptel-tk-define gptel-tool-create-directory (dir-path)
+(gptel-tk-define gptel-tk-tool-create-directory (dir-path)
   "Create a new directory at DIR-PATH."
   (let ((full-path (expand-file-name dir-path)))
     (when (file-exists-p full-path)
@@ -560,7 +560,7 @@ buffer only; the original buffer is not modified by this command."
 
 ;; Emacs
 
-(gptel-tk-define gptel-tool-read-documentation (symbol-name)
+(gptel-tk-define gptel-tk-tool-read-documentation (symbol-name)
   "Read the documentation for SYMBOL-NAME."
   (let* ((sym (intern-soft symbol-name))
          (doc (if (fboundp sym)
@@ -570,7 +570,7 @@ buffer only; the original buffer is not modified by this command."
                 (documentation-property sym 'variable-documentation))))
     (or doc (format "No documentation found for symbol '%s'." symbol-name))))
 
-(gptel-tk-define gptel-tool-read-function (function-name)
+(gptel-tk-define gptel-tk-tool-read-function (function-name)
   "Return the definition of FUNCTION-NAME."
   (let ((func-symbol (intern-soft function-name)))
     (unless (and func-symbol (fboundp func-symbol))
@@ -584,7 +584,7 @@ buffer only; the original buffer is not modified by this command."
             (forward-sexp 1)
             (buffer-substring-no-properties beg (point))))))))
 
-(gptel-tk-define gptel-tool-load-library (library-name &optional include-counts)
+(gptel-tk-define gptel-tk-tool-load-library (library-name &optional include-counts)
   "Load LIBRARY-NAME into a buffer.
 If INCLUDE-COUNTS is non-nil, append the number of lines as \" (N
 lines)\"."
@@ -607,7 +607,7 @@ lines)\"."
                       (count-lines (point-min) (point-max))))
           (format "%s." base-message))))))
 
-(gptel-tk-define gptel-tool-read-info-symbol (symbol-name)
+(gptel-tk-define gptel-tk-tool-read-info-symbol (symbol-name)
   "Return the contents of the Info node for SYMBOL-NAME.
 SYMBOL-NAME should be the name of an Emacs Lisp function, macro, or
 variable (e.g., \"defun\", \"let\", \"buffer-string\").  The function
@@ -635,7 +635,7 @@ returns the content of that Info page."
                    (not (member (buffer-name buffer) info-buffer-names-before)))
           (kill-buffer buffer))))))
 
-(gptel-tk-define gptel-tool-read-info-node (node-name)
+(gptel-tk-define gptel-tk-tool-read-info-node (node-name)
   "Return the contents of the Info node NODE-NAME.
 NODE-NAME should be the name of a section in the Elisp manual, such as
 \"Control Structures\", \"Variables\", or \"Functions\".  The function
@@ -664,7 +664,7 @@ page."
                    (not (member (buffer-name buffer) info-buffer-names-before)))
           (kill-buffer buffer))))))
 
-(gptel-tk-define gptel-tool-eval-buffer (buffer-name)
+(gptel-tk-define gptel-tk-tool-eval-buffer (buffer-name)
   "Evaluate all Emacs Lisp code in BUFFER-NAME.
 This evaluates the current buffer content, including any unsaved changes."
   (let ((buf (get-buffer buffer-name)))
@@ -674,7 +674,7 @@ This evaluates the current buffer content, including any unsaved changes."
       (eval-buffer))
     (format "Successfully evaluated all code in buffer %s." buffer-name)))
 
-(gptel-tk-define gptel-tool-eval-function (function-name buffer-name)
+(gptel-tk-define gptel-tk-tool-eval-function (function-name buffer-name)
   "Evaluate FUNCTION-NAME in BUFFER-NAME.
 This finds the function definition in the buffer and evaluates it,
 including any unsaved changes."
@@ -696,7 +696,7 @@ including any unsaved changes."
     (format "Successfully evaluated function %s from buffer %s."
             function-name buffer-name)))
 
-(gptel-tk-define gptel-tool-eval-expression (expression)
+(gptel-tk-define gptel-tk-tool-eval-expression (expression)
   "Evaluate an Emacs Lisp EXPRESSION and return the result.
 WARNING: This can execute arbitrary code and should be used with caution."
   (let ((result (eval (read expression))))
@@ -704,13 +704,13 @@ WARNING: This can execute arbitrary code and should be used with caution."
 
 ;; Project
 
-(gptel-tk-define gptel-tool-project-get-root ()
+(gptel-tk-define gptel-tk-tool-project-get-root ()
   "Get the root directory of the current project."
   (let ((project (project-current)))
     (unless project (error "Not inside a project."))
     (project-root project)))
 
-(gptel-tk-define gptel-tool-project-list-files (&optional include-counts)
+(gptel-tk-define gptel-tk-tool-project-list-files (&optional include-counts)
   "Return a newline-separated string listing all files in the current project.
 Each line is of the form \"NAME: PATH\", where NAME is the file's base
 name and PATH is the path relative to the current project root.  If
@@ -730,7 +730,7 @@ INCLUDE-COUNTS is non-nil, append the number of lines as \" (N lines)\"."
                        (format "%s: %s" name rel))))
                  project-file-list "\n"))))
 
-(gptel-tk-define gptel-tool-project-find-files-glob (pattern &optional include-counts)
+(gptel-tk-define gptel-tk-tool-project-find-files-glob (pattern &optional include-counts)
   "In the current project, find files whose filenames match the glob PATTERN.
 Returns a newline-separated string where each line is of the form
 \"NAME: PATH\".  NAME is the file's base name and PATH is the path
@@ -762,7 +762,7 @@ append the number of lines as \" (N lines)\".  This function respects
                        (format "%s: %s" name rel))))
                  matched "\n"))))
 
-(gptel-tk-define gptel-tool-project-search-regexp (regexp &optional include-columns)
+(gptel-tk-define gptel-tk-tool-project-search-regexp (regexp &optional include-columns)
   "In the current project, recursively search for content matching REGEXP.
 Returns a newline-separated string of matching lines.  Each match is
 formatted as PATH:LINE:TEXT or, if INCLUDE-COLUMNS is non-nil,
@@ -909,7 +909,7 @@ behavior.  STATS is an ERT stats object containing test results."
 
     (string-trim (buffer-substring-no-properties (point-min) (point-max)))))
 
-(gptel-tk-define gptel-tool-ert-list-unit-tests ()
+(gptel-tk-define gptel-tk-tool-ert-list-unit-tests ()
   "List names of loaded ERT tests tagged 'unit'."
   (require 'ert)
   (let* ((tests (ert-select-tests '(tag unit) t))
@@ -918,7 +918,7 @@ behavior.  STATS is an ERT stats object containing test results."
         (mapconcat (lambda (sym) (symbol-name sym)) names "\n")
       "No loaded ERT unit tests found.")))
 
-(gptel-tk-define gptel-tool-ert-run-unit ()
+(gptel-tk-define gptel-tk-tool-ert-run-unit ()
   "Run all ERT tests tagged 'unit'."
   (require 'ert)
 
@@ -943,7 +943,7 @@ behavior.  STATS is an ERT stats object containing test results."
   ;;           summary
   ;;           detailed-info)))))
 
-(gptel-tk-define gptel-tool-ert-run-by-name (test-name)
+(gptel-tk-define gptel-tk-tool-ert-run-by-name (test-name)
   "Run a single ERT test by name and return results.
 TEST-NAME is the string name of the ERT test symbol to run."
   (require 'ert)
@@ -966,8 +966,8 @@ TEST-NAME is the string name of the ERT test symbol to run."
 ;; Buffers
 
 (gptel-make-tool
- :function #'gptel-tool-buffer-search-regexp
- :name "buffer_search_regexp"
+ :function #'gptel-tk-tool-buffer-search-regexp
+ :name (gptel-tk--make-tool-name "buffer_search_regexp")
  :description "Search a buffer for content matching a regexp. This returns a newline-separated string of matching lines. Each line is formatted as LINE:TEXT or, if 'include-columns' is true, LINE:COLUMN:TEXT where LINE is 1-based and COLUMN is 0-based."
  :args '((:name "buffer-name"
                 :type string
@@ -982,8 +982,8 @@ TEST-NAME is the string name of the ERT test symbol to run."
  :category "buffers")
 
 (gptel-make-tool
- :function #'gptel-tool-open-file-in-buffer
- :name "open_file_in_buffer"
+ :function #'gptel-tk-tool-open-file-in-buffer
+ :name (gptel-tk--make-tool-name "open_file_in_buffer")
  :description "Open a file into a visiting buffer."
  :args (list '(:name "file-path"
                      :type string
@@ -991,8 +991,8 @@ TEST-NAME is the string name of the ERT test symbol to run."
  :category "buffers")
 
 (gptel-make-tool
- :function #'gptel-tool-read-buffer-lines-count
- :name "read_buffer_lines_count"
+ :function #'gptel-tk-tool-read-buffer-lines-count
+ :name (gptel-tk--make-tool-name "read_buffer_lines_count")
  :description (format "Read lines from a buffer; max lines per call: %d. 'start-line' and 'count' are optional and default to 1 and %d, respectively." gptel-tk-max-lines gptel-tk-max-lines)
  :args (list '( :name "buffer-name"
                 :type string
@@ -1009,8 +1009,8 @@ TEST-NAME is the string name of the ERT test symbol to run."
  :category "buffers")
 
 (gptel-make-tool
- :function #'gptel-tool-list-buffers
- :name "list_buffers"
+ :function #'gptel-tk-tool-list-buffers
+ :name (gptel-tk--make-tool-name "list_buffers")
  :description "Return a newline-separated string listing all currently open buffers that are associated with a file. Each line is of the form \"NAME: PATH\" where NAME is the buffer name and PATH is the file path relative to the current project root when the file is inside a project; otherwise PATH is the absolute file path. If the optional argument 'include-counts' is true, append the number of lines as \" (N lines)\"."
  :args '((:name "include-counts"
                 :type boolean
@@ -1019,8 +1019,8 @@ TEST-NAME is the string name of the ERT test symbol to run."
  :category "buffers")
 
 (gptel-make-tool
- :function #'gptel-tool-list-all-buffers
- :name "list_all_buffers"
+ :function #'gptel-tk-tool-list-all-buffers
+ :name (gptel-tk--make-tool-name "list_all_buffers")
  :description "Return a newline-separated string listing all currently open buffers. Each line is either of the form \"NAME: PATH\" for file-backed buffers or just \"NAME\" for non-file buffers.  NAME is the buffer name and PATH is the file path relative to the current project root.  When the file is outside the current project, PATH is the absolute file path.  If INCLUDE-COUNTS is true, append the number of lines as \" (N lines)\"."
  :args '((:name "include-counts"
                 :type boolean
@@ -1029,8 +1029,8 @@ TEST-NAME is the string name of the ERT test symbol to run."
  :category "buffers")
 
 (gptel-make-tool
- :function #'gptel-tool-buffer-to-file
- :name "buffer_to_file"
+ :function #'gptel-tk-tool-buffer-to-file
+ :name (gptel-tk--make-tool-name "buffer_to_file")
  :description "Return the file path for a given buffer."
  :args (list '(:name "buffer-name"
                      :type string
@@ -1038,8 +1038,8 @@ TEST-NAME is the string name of the ERT test symbol to run."
  :category "buffers")
 
 (gptel-make-tool
- :function #'gptel-tool-file-to-buffer
- :name "file_to_buffer"
+ :function #'gptel-tk-tool-file-to-buffer
+ :name (gptel-tk--make-tool-name "file_to_buffer")
  :description "Return the buffer name for a given file path."
  :args (list '(:name "file-path"
                      :type string
@@ -1047,8 +1047,8 @@ TEST-NAME is the string name of the ERT test symbol to run."
  :category "buffers")
 
 (gptel-make-tool
- :function #'gptel-tool-append-to-buffer
- :name "append_to_buffer"
+ :function #'gptel-tk-tool-append-to-buffer
+ :name (gptel-tk--make-tool-name "append_to_buffer")
  :description "Append text to a buffer (at the end of the buffer)."
  :args (list '(:name "buffer-name"
                      :type string
@@ -1059,8 +1059,8 @@ TEST-NAME is the string name of the ERT test symbol to run."
  :category "buffers")
 
 (gptel-make-tool
- :function #'gptel-tool-insert-in-buffer
- :name "insert_in_buffer"
+ :function #'gptel-tk-tool-insert-in-buffer
+ :name (gptel-tk--make-tool-name "insert_in_buffer")
  :description "Insert text in a buffer at a specific line number. The text is inserted at the beginning of the specified line."
  :args (list '(:name "buffer-name"
                      :type string
@@ -1074,8 +1074,8 @@ TEST-NAME is the string name of the ERT test symbol to run."
  :category "buffers")
 
 (gptel-make-tool
- :function #'gptel-tool-replace-buffer
- :name "replace_buffer"
+ :function #'gptel-tk-tool-replace-buffer
+ :name (gptel-tk--make-tool-name "replace_buffer")
  :description "Completely overwrite the contents of a buffer."
  :args (list '(:name "buffer-name"
                      :type string
@@ -1086,8 +1086,8 @@ TEST-NAME is the string name of the ERT test symbol to run."
  :category "buffers")
 
 (gptel-make-tool
- :function #'gptel-tool-edit-buffer-string
- :name "edit_buffer_string"
+ :function #'gptel-tk-tool-edit-buffer-string
+ :name (gptel-tk--make-tool-name "edit_buffer_string")
  :description "Edit a buffer by replacing a single instance of an exact string: The tool replaces a single instance of 'old-string' with 'new-string' in BUFFER-NAME. 'old-string' is treated literally and may contain newline characters; it must occur exactly once. 'new-string' may contain newline characters and will be inserted as-is."
  :args '((:name "buffer-name"
                 :type string
@@ -1101,8 +1101,8 @@ TEST-NAME is the string name of the ERT test symbol to run."
  :category "buffers")
 
 (gptel-make-tool
- :function #'gptel-tool-replace-buffer-line
- :name "replace_buffer_line"
+ :function #'gptel-tk-tool-replace-buffer-line
+ :name (gptel-tk--make-tool-name "replace_buffer_line")
  :description "Replace a single line in a buffer with new content. The new content may contain newline characters."
  :args '((:name "buffer-name" :type string :description "The name of the buffer to modify.")
          (:name "line-number" :type integer :description "The 1-based line number of the line to replace.")
@@ -1110,8 +1110,8 @@ TEST-NAME is the string name of the ERT test symbol to run."
  :category "buffers")
 
 (gptel-make-tool
- :function #'gptel-tool-replace-buffer-lines
- :name "replace_buffer_lines"
+ :function #'gptel-tk-tool-replace-buffer-lines
+ :name (gptel-tk--make-tool-name "replace_buffer_lines")
  :description "Replace a range of lines in a buffer with new content. The new content may contain newline characters. To replace a single line set 'start-line' == 'end-line'. Line numbers are 1-based."
  :args (list '(:name "buffer-name" :type string
                      :description "The name of the buffer to modify.")
@@ -1124,8 +1124,8 @@ TEST-NAME is the string name of the ERT test symbol to run."
  :category "buffers")
 
 (gptel-make-tool
- :function #'gptel-tool-delete-buffer-string
- :name "delete_buffer_string"
+ :function #'gptel-tk-tool-delete-buffer-string
+ :name (gptel-tk--make-tool-name "delete_buffer_string")
  :description "Delete a single instance of an exact string from a buffer. 'old-string' is treated literally and may contain newline characters; it must occur exactly once."
  :args '((:name "buffer-name"
                 :type string
@@ -1136,16 +1136,16 @@ TEST-NAME is the string name of the ERT test symbol to run."
  :category "buffers")
 
 (gptel-make-tool
- :function #'gptel-tool-delete-buffer-line
- :name "delete_buffer_line"
+ :function #'gptel-tk-tool-delete-buffer-line
+ :name (gptel-tk--make-tool-name "delete_buffer_line")
  :description "Delete a single line in a buffer."
  :args '((:name "buffer-name" :type string :description "The name of the buffer to modify.")
          (:name "line-number" :type integer :description "The 1-based line number of the line to delete."))
  :category "buffers")
 
 (gptel-make-tool
- :function #'gptel-tool-delete-buffer-lines
- :name "delete_buffer_lines"
+ :function #'gptel-tk-tool-delete-buffer-lines
+ :name (gptel-tk--make-tool-name "delete_buffer_lines")
  :description "Delete a range of lines in a buffer. To delete a single line set 'start-line' == 'end-line'. Line numbers are 1-based."
  :args (list '(:name "buffer-name" :type string
                      :description "The name of the buffer to modify.")
@@ -1156,8 +1156,8 @@ TEST-NAME is the string name of the ERT test symbol to run."
  :category "buffers")
 
 (gptel-make-tool
- :function #'gptel-tool-apply-buffer-string-edits
- :name "apply_buffer_string_edits"
+ :function #'gptel-tk-tool-apply-buffer-string-edits
+ :name (gptel-tk--make-tool-name "apply_buffer_string_edits")
  :description "Edit a buffer with a list of string edits, applying changes directly without review. Each edit contains a 'line-number', an 'old-string' and a 'new-string'. The 'old-string' must be found entirely on the specified line (it must not contain newline characters). The 'new-string' may contain newline characters and will be inserted as-is. Edits are applied from the bottom of the buffer to the top to handle line number changes correctly."
  :args (list '(:name "buffer-name"
                      :type string
@@ -1176,8 +1176,8 @@ TEST-NAME is the string name of the ERT test symbol to run."
  :category "buffers")
 
 (gptel-make-tool
- :function #'gptel-tool-apply-buffer-string-edits-with-review
- :name "apply_buffer_string_edits_with_review"
+ :function #'gptel-tk-tool-apply-buffer-string-edits-with-review
+ :name (gptel-tk--make-tool-name "apply_buffer_string_edits_with_review")
  :description "Edit a buffer with a list of string edits and start an Ediff session for review. Each edit contains a 'line-number', an 'old-string' and a 'new-string'. The 'old-string' must be found entirely on the specified line (it must not contain newline characters). The 'new-string' may contain newline characters and will be inserted as-is. Edits are applied from the bottom of the buffer to the top to handle line number changes correctly.
 
 This action requires manual user review. After calling this tool, you must stop and instruct the user to complete the review in the Ediff session and to notify you when they are finished. Do not proceed with any other tools or actions until you receive confirmation from the user."
@@ -1198,8 +1198,8 @@ This action requires manual user review. After calling this tool, you must stop 
  :category "buffers")
 
 (gptel-make-tool
- :function #'gptel-tool-apply-buffer-line-edits
- :name "apply_buffer_line_edits"
+ :function #'gptel-tk-tool-apply-buffer-line-edits
+ :name (gptel-tk--make-tool-name "apply_buffer_line_edits")
  :description "Edit a buffer with a list of edits, applying changes directly without review. Each edit targets a specific line and must contain a 'line-number' and an 'old-string' that must exactly match that line's content (old-string must not contain newline characters). The 'new-string' will replace the line and may contain newline characters; it will be inserted as-is. Edits are applied from the bottom of the buffer to the top to handle line number changes correctly."
  :args (list '(:name "buffer-name"
                      :type string
@@ -1218,8 +1218,8 @@ This action requires manual user review. After calling this tool, you must stop 
  :category "buffers")
 
 (gptel-make-tool
- :function #'gptel-tool-apply-buffer-line-edits-with-review
- :name "apply_buffer_line_edits_with_review"
+ :function #'gptel-tk-tool-apply-buffer-line-edits-with-review
+ :name (gptel-tk--make-tool-name "apply_buffer_line_edits_with_review")
  :description "Edit a buffer with a list of edits and start an Ediff session for review. Each edit targets a specific line and must contain a 'line-number' and an 'old-string' that must exactly match that line's content (old-string must not contain newline characters). The 'new-string' will replace the matched text and may contain newline characters; it will be inserted as-is. Edits are applied from the bottom of the buffer to the top to handle line number changes correctly.
 
 This action requires manual user review. After calling this tool, you must stop and instruct the user to complete the review in the Ediff session and to notify you when they are finished. Do not proceed with any other tools or actions until you receive confirmation from the user."
@@ -1242,8 +1242,8 @@ This action requires manual user review. After calling this tool, you must stop 
 ;; Files
 
 (gptel-make-tool
- :function #'gptel-tool-create-file
- :name "create_file"
+ :function #'gptel-tk-tool-create-file
+ :name (gptel-tk--make-tool-name "create_file")
  :description "Create a new file with the specified content. Fails if the file already exists."
  :args '((:name "file-path"
                 :type string
@@ -1255,8 +1255,8 @@ This action requires manual user review. After calling this tool, you must stop 
  :category "files")
 
 (gptel-make-tool
- :function #'gptel-tool-create-directory
- :name "create_directory"
+ :function #'gptel-tk-tool-create-directory
+ :name (gptel-tk--make-tool-name "create_directory")
  :description "Create a new directory at the specified path. Creates parent directories as needed."
  :args '((:name "dir-path"
                 :type string
@@ -1267,8 +1267,8 @@ This action requires manual user review. After calling this tool, you must stop 
 ;; Emacs
 
 (gptel-make-tool
- :function #'gptel-tool-read-documentation
- :name "read_documentation"
+ :function #'gptel-tk-tool-read-documentation
+ :name (gptel-tk--make-tool-name "read_documentation")
  :description "Return the documentation for a given Emacs Lisp symbol. The symbol can be either a function or a variable"
  :args (list '(:name "symbol-name"
                      :type string
@@ -1276,8 +1276,8 @@ This action requires manual user review. After calling this tool, you must stop 
  :category "emacs")
 
 (gptel-make-tool
- :function #'gptel-tool-read-function
- :name "read_function"
+ :function #'gptel-tk-tool-read-function
+ :name (gptel-tk--make-tool-name "read_function")
  :description "Return the code of a given Emacs Lisp function."
  :args (list '(:name "function-name"
                      :type string
@@ -1285,8 +1285,8 @@ This action requires manual user review. After calling this tool, you must stop 
  :category "emacs")
 
 (gptel-make-tool
- :function #'gptel-tool-load-library
- :name "load_library"
+ :function #'gptel-tk-tool-load-library
+ :name (gptel-tk--make-tool-name "load_library")
  :description "Load an Emacs library or package into a buffer."
  :args (list '(:name "library-name"
                      :type string
@@ -1297,8 +1297,8 @@ This action requires manual user review. After calling this tool, you must stop 
  :category "emacs")
 
 (gptel-make-tool
- :function #'gptel-tool-read-info-symbol
- :name "read_info_symbol"
+ :function #'gptel-tk-tool-read-info-symbol
+ :name (gptel-tk--make-tool-name "read_info_symbol")
  :description "Return the contents of the info node where a given Emacs Lisp symbol is documented."
  :args (list '(:name "symbol-name"
                      :type string
@@ -1306,8 +1306,8 @@ This action requires manual user review. After calling this tool, you must stop 
  :category "emacs")
 
 (gptel-make-tool
- :function #'gptel-tool-read-info-node
- :name "read_info_node"
+ :function #'gptel-tk-tool-read-info-node
+ :name (gptel-tk--make-tool-name "read_info_node")
  :description "Return the contents of a specific info node from the Emacs Lisp manual."
  :args (list '(:name "node-name"
                      :type string
@@ -1315,8 +1315,8 @@ This action requires manual user review. After calling this tool, you must stop 
  :category "emacs")
 
 (gptel-make-tool
- :function #'gptel-tool-eval-buffer
- :name "eval_buffer"
+ :function #'gptel-tk-tool-eval-buffer
+ :name (gptel-tk--make-tool-name "eval_buffer")
  :description "Evaluate all Emacs Lisp code in a buffer. This evaluates the buffer's current content, including any unsaved changes."
  :args '((:name "buffer-name"
                 :type string
@@ -1325,8 +1325,8 @@ This action requires manual user review. After calling this tool, you must stop 
  :category "emacs")
 
 (gptel-make-tool
- :function #'gptel-tool-eval-function
- :name "eval_function"
+ :function #'gptel-tk-tool-eval-function
+ :name (gptel-tk--make-tool-name "eval_function")
  :description "Evaluate a function definition from a buffer. This finds the function definition in the buffer and evaluates it, including any unsaved changes."
  :args '((:name "function-name"
                 :type string
@@ -1338,8 +1338,8 @@ This action requires manual user review. After calling this tool, you must stop 
  :category "emacs")
 
 (gptel-make-tool
- :function #'gptel-tool-eval-expression
- :name "eval_expression"
+ :function #'gptel-tk-tool-eval-expression
+ :name (gptel-tk--make-tool-name "eval_expression")
  :description "Evaluate an Emacs Lisp expression and return the result. WARNING: This can execute arbitrary code and should be used with caution."
  :args '((:name "expression"
                 :type string
@@ -1350,15 +1350,15 @@ This action requires manual user review. After calling this tool, you must stop 
 ;; Project
 
 (gptel-make-tool
- :function #'gptel-tool-project-get-root
- :name "project_get_root"
+ :function #'gptel-tk-tool-project-get-root
+ :name (gptel-tk--make-tool-name "project_get_root")
  :description "Get the root directory of the current project."
  :args nil
  :category "project")
 
 (gptel-make-tool
- :function #'gptel-tool-project-list-files
- :name "project_list_files"
+ :function #'gptel-tk-tool-project-list-files
+ :name (gptel-tk--make-tool-name "project_list_files")
  :description "Return a newline-separated string listing all files in the current project. Each line is of the form \"NAME: PATH\", where NAME is the file's base name and PATH is the path relative to the current project root. If the optional argument 'include-counts' is true, append the number of lines as \" (N lines).\""
  :args '((:name "include-counts"
                 :type boolean
@@ -1367,8 +1367,8 @@ This action requires manual user review. After calling this tool, you must stop 
  :category "project")
 
 (gptel-make-tool
- :function #'gptel-tool-project-find-files-glob
- :name "project_find_files_glob"
+ :function #'gptel-tk-tool-project-find-files-glob
+ :name (gptel-tk--make-tool-name "project_find_files_glob")
  :description "In the current project, find files matching a glob pattern. To search recursively, use the '**/' prefix. For example, a pattern of '**/*.el' finds all Emacs Lisp files in the project, while '*.el' finds them only in the root directory. The result is a newline-separated string where each line is of the form \"NAME: PATH\", where NAME is the file's base name and PATH is the path relative to the current project root.  If the optional argument 'include-counts' is true, append the number of lines as \" (N lines)\"."
  :args '((:name "pattern"
                 :type string
@@ -1380,8 +1380,8 @@ This action requires manual user review. After calling this tool, you must stop 
  :category "project")
 
 (gptel-make-tool
- :function #'gptel-tool-project-search-regexp
- :name "project_search_regexp"
+ :function #'gptel-tk-tool-project-search-regexp
+ :name (gptel-tk--make-tool-name "project_search_regexp")
  :description "In the current project, recursively search for content matching REGEXP. The tool returns a newline-separated string of matching lines. Each line includes: PATH:LINE:TEXT, where PATH is the file path relative to the current project root, LINE is the 1-based line number of the match, and TEXT is the matched line text. If the optional argument 'include-columns' is true, the tool returns PATH:LINE:COLUMN:TEXT, where COLUMN is the 1-based column number of the match."
  :args '((:name "regexp"
                 :type string
@@ -1395,22 +1395,22 @@ This action requires manual user review. After calling this tool, you must stop 
 ;; Test
 
 (gptel-make-tool
- :function #'gptel-tool-ert-list-unit-tests
- :name "ert_list_unit_tests"
+ :function #'gptel-tk-tool-ert-list-unit-tests
+ :name (gptel-tk--make-tool-name "ert_list_unit_tests")
  :description "Return a newline-separated list of names for loaded ERT unit tests."
  :args '()
  :category "test")
 
 (gptel-make-tool
- :function #'gptel-tool-ert-run-unit
- :name "ert_run_unit"
+ :function #'gptel-tk-tool-ert-run-unit
+ :name (gptel-tk--make-tool-name "ert_run_unit")
  :description "Run all ERT unit tests."
  :args '()
  :category "test")
 
 (gptel-make-tool
- :function #'gptel-tool-ert-run-by-name
- :name "ert_run_by_name"
+ :function #'gptel-tk-tool-ert-run-by-name
+ :name (gptel-tk--make-tool-name "ert_run_by_name")
  :description "Run a single ERT unit test by name."
  :args '((:name "test-name"
                 :type string
