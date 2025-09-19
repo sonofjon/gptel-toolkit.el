@@ -1,4 +1,4 @@
-;;; gptel-tool-kit-test.el --- Tests for gptel-tool-kit -*- lexical-binding: t; -*-
+;;; gptel-toolkit-test.el --- Tests for gptel-toolkit -*- lexical-binding: t; -*-
 ;;
 ;; Author: Andreas Jonsson <ajdev8@gmail.com>
 ;; Maintainer: Andreas Jonsson <ajdev8@gmail.com>
@@ -19,8 +19,8 @@
 
 ;; Libraries required for these tests
 (require 'gptel)
-(require 'gptel-tool-framework)
-(require 'gptel-builtin-tools)
+(require 'gptel-toolkit-core)
+(require 'gptel-toolkit-tools)
 
 ;;;; Helper functions
 
@@ -2293,6 +2293,6 @@ if all tools are valid."
       (message "All GPTel tools validated successfully!")
       nil)))
 
-(provide 'gptel-tool-test)
+(provide 'gptel-toolkit-test)
 
-;;; gptel-tool-test.el ends here
+;;; gptel-toolkit-test.el ends here

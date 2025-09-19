@@ -1,4 +1,4 @@
-;;; gptel-tool-framework.el --- Core framework for gptel tools -*- lexical-binding: t; -*-
+;;; gptel-toolkit-core.el --- Core framework for gptel tools -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2025 Andreas Jonsson
 
@@ -22,17 +22,17 @@
 (defcustom gptel-tk-log-buffer "*gptel-tool-log*"
   "Name of the buffer used for tool logging."
   :type 'string
-  :group 'gptel-tool-kit)
+  :group 'gptel-toolkit)
 
 (defcustom gptel-tk-suppress-logging nil
   "When non-nil, suppress all tool logging."
   :type 'boolean
-  :group 'gptel-tool-kit)
+  :group 'gptel-toolkit)
 
 (defcustom gptel-tk-return-error t
   "When non-nil, return error messages as strings instead of signaling."
   :type 'boolean
-  :group 'gptel-tool-kit)
+  :group 'gptel-toolkit)
 
 (defcustom gptel-tk-tool-prefix ""
   "Prefix to add to all tool registration names.
@@ -40,7 +40,7 @@ If empty, tools are registered with clean names like 'buffer_search'.
 If set to 'tk_', tools become 'tk_buffer_search', etc.  Useful to avoid
 conflicts with other tool packages."
   :type 'string
-  :group 'gptel-tool-kit)
+  :group 'gptel-toolkit)
 
 ;;; Utility Macros
 
@@ -261,6 +261,6 @@ string; otherwise it re-signals the original error."
         msg
       (signal (car err) (cdr err)))))
 
-(provide 'gptel-tool-framework)
+(provide 'gptel-toolkit-core)
 
-;;; gptel-tool-framework.el ends here
+;;; gptel-toolkit-core.el ends here

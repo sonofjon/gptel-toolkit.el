@@ -1,11 +1,11 @@
-# gptel-tool-kit
+# gptel-toolkit
 
 A development framework and toolkit for building robust tools for the gptel
 Emacs package.
 
 ## Overview
 
-gptel-tool-kit provides a comprehensive framework for creating, managing,
+gptel-toolkit provides a comprehensive framework for creating, managing,
 and debugging tools that integrate with gptel. It includes:
 
 - **Core framework** with advanced tool macros and error handling
@@ -21,10 +21,10 @@ and debugging tools that integrate with gptel. It includes:
 
 ```elisp
 ;; Basic setup
-(require 'gptel-tool-kit)
+(require 'gptel-toolkit)
 
 ;; Use built-in tools
-(gptel-tool-kit-enable-builtin-tools)
+(gptel-toolkit-enable-builtin-tools)
 
 ;; Or build your own tools using the framework
 ```

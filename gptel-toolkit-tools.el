@@ -1,4 +1,4 @@
-;;; gptel-builtin-tools.el --- Built-in tools for gptel-tool-kit  -*- lexical-binding: t; -*-
+;;; gptel-toolkit-tools.el --- Built-in tools for gptel-toolkit  -*- lexical-binding: t; -*-
 ;;
 ;; Copyright (C) 2025 Andreas Jonsson
 
@@ -6,7 +6,7 @@
 ;; Maintainer: Andreas Jonsson <ajdev8@gmail.com>
 ;; URL: https://github.com/sonofjon/gptel-tool-kit
 ;; Version: 0.1.0
-;; Package-Requires: ((emacs "28.1") (gptel "0.8.0") (gptel-tool-framework "0.1.0"))
+;; Package-Requires: ((emacs "28.1") (gptel "0.8.0") (gptel-toolkit-core "0.1.0"))
 ;; Keywords: tools, ai, gptel, buffers, files, project, emacs
 
 ;; This file contains the built-in tool implementations migrated from aj8-gptel.el
@@ -14,7 +14,7 @@
 
 ;;; Commentary:
 ;;
-;; This file contains the built-in tool implementations for gptel-tool-kit.
+;; This file contains the built-in tool implementations for gptel-toolkit.
 ;; All tools are defined using the gptel-tk-define macro from the framework
 ;; and provide comprehensive functionality for:
 ;;
@@ -28,7 +28,7 @@
 
 ;;; Code:
 
-(require 'gptel-tool-framework)
+(require 'gptel-toolkit-core)
 (require 'gptel)
 
 ;;; Customization
@@ -36,14 +36,14 @@
 (defcustom gptel-tk-max-lines 100
   "Default maximum number of lines any read tool will return."
   :type 'integer
-  :group 'gptel-tool-kit)
+  :group 'gptel-toolkit)
 
 (defcustom gptel-tk-excluded-tools nil
   "Tool names to exclude when building a filtered list of GPTel tools.
 This list is used by `gptel-tk--get-minimal-tools' to filter out
 specific tools from the complete set of available GPTel tools."
   :type '(repeat string)
-  :group 'gptel-tool-kit)
+  :group 'gptel-toolkit)
 
 ;;; Helpers
 
@@ -1417,6 +1417,6 @@ This action requires manual user review. After calling this tool, you must stop 
                 :description "The name of the ERT test symbol to run."))
  :category "test")
 
-(provide 'gptel-builtin-tools)
+(provide 'gptel-toolkit-tools)
 
-;;; gptel-builtin-tools.el ends here
+;;; gptel-toolkit-tools.el ends here
