@@ -32,8 +32,8 @@
   :type 'boolean
   :group 'gptel-toolkit)
 
-(defcustom gptel-tk-return-error t
-  "When non-nil, return error messages as strings instead of signaling."
+(defcustom gptel-tk-catch-errors t
+  "When non-nil, catch tool errors and return as strings instead of signaling."
   :type 'boolean
   :group 'gptel-toolkit)
 
@@ -86,7 +86,7 @@ The macro binds local variables `tool-name' and `args' and then:
   `*gptel-tool-log*' buffer and returns RESULT.
 - On error it delegates to `gptel-tk--report-and-return-or-signal',
   which messages/logs and returns or re-signals depending on
-  `gptel-tk-return-error'."
+  `gptel-tk-catch-errors'."
   `(let* ((tool-name ,tool-name)
           (args ,args)
           (display-args (gptel-tk--filter-display-args args)))
@@ -255,12 +255,12 @@ Returns a new property list with only the desired pairs for display."
   "Report ERR for TOOL-NAME with ARGS, then return or re-signal.
 
 This builds the exact minibuffer message string for ERR, messages it,
-and logs it. If `gptel-tk-return-error' is non-nil, it returns that
+and logs it.  If `gptel-tk-catch-errors' is non-nil, it returns that
 string; otherwise it re-signals the original error."
   (let ((msg (format "%s: Error: %s" tool-name (error-message-string err))))
     (message "%s" msg)
     (gptel-tk--log-tool-error tool-name args (error-message-string err))
-    (if gptel-tk-return-error
+    (if gptel-tk-catch-errors
         msg
       (signal (car err) (cdr err)))))
 

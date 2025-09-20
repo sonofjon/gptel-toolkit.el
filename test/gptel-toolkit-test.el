@@ -182,11 +182,11 @@ Optional keyword parameters:
         (progn
           (delete-file tmp)
           ;; Mode 1: tool re-signals the error
-          (let ((gptel-tk-return-error nil))
+          (let ((gptel-tk-catch-errors nil))
             ;; Assert that an error is signaled when opening missing file
             (should-error (gptel-tk-tool-open-file-in-buffer tmp) :type 'error))
           ;; Mode 2: tool returns the error as a string
-          (let ((gptel-tk-return-error t))
+          (let ((gptel-tk-catch-errors t))
             (let ((result (gptel-tk-tool-open-file-in-buffer tmp)))
               ;; Assert that the error message contains expected file path
               (should (string-equal
@@ -200,11 +200,11 @@ Optional keyword parameters:
     (unwind-protect
         (progn
           ;; Mode 1: tool re-signals the error
-          (let ((gptel-tk-return-error nil))
+          (let ((gptel-tk-catch-errors nil))
             ;; Assert that an error is signaled when opening directory as file
             (should-error (gptel-tk-tool-open-file-in-buffer dir) :type 'error))
           ;; Mode 2: tool returns the error as a string
-          (let ((gptel-tk-return-error t))
+          (let ((gptel-tk-catch-errors t))
             (let ((result (gptel-tk-tool-open-file-in-buffer dir)))
               ;; Assert that the error message indicates directory is not a file
               (should (string-equal
@@ -241,11 +241,11 @@ Optional keyword parameters:
 
    ;; Test error handling for non-existent buffer:
    ;; Mode 1: tool re-signals the error
-   (let ((gptel-tk-return-error nil))
+   (let ((gptel-tk-catch-errors nil))
      ;; Assert that an error is signaled when searching missing buffer
      (should-error (gptel-tk-tool-buffer-search-regexp "*non-existent-buffer*" "test") :type 'error))
    ;; Mode 2: tool returns the error as a string
-   (let ((gptel-tk-return-error t))
+   (let ((gptel-tk-catch-errors t))
      (let ((result (gptel-tk-tool-buffer-search-regexp "*non-existent-buffer*" "test")))
        ;; Assert that the error message matches expected format
        (should (string-equal
@@ -254,11 +254,11 @@ Optional keyword parameters:
 
    ;; Test invalid regexp error handling:
    ;; Mode 1: tool re-signals the error
-   (let ((gptel-tk-return-error nil))
+   (let ((gptel-tk-catch-errors nil))
      ;; Assert that an error is signaled for invalid regexp
      (should-error (gptel-tk-tool-buffer-search-regexp "*test-buffer-search*" "[invalid") :type 'error))
    ;; Mode 2: tool returns the error as a string
-   (let ((gptel-tk-return-error t))
+   (let ((gptel-tk-catch-errors t))
      (let ((result (gptel-tk-tool-buffer-search-regexp "*test-buffer-search*" "[invalid")))
        ;; Assert that the returned error message matches expected format
        (should (string-equal
@@ -304,7 +304,7 @@ Optional keyword parameters:
 
 ;;      ;; Test error validation line limits:
 ;;      ;; Mode 1: tool re-signals the error
-;;      (let ((gptel-tk-return-error nil))
+;;      (let ((gptel-tk-catch-errors nil))
 ;;        ;; Assert error when total number of lines > MAX
 ;;        (should-error (gptel-tk-tool-read-buffer-lines "*test-read-buffer*") :type 'error)
 ;;        ;; Assert error when requested length > MAX
@@ -339,11 +339,11 @@ Optional keyword parameters:
 
    ;; Test non-existent buffer errors:
    ;; Mode 1: tool re-signals the error
-   (let ((gptel-tk-return-error nil))
+   (let ((gptel-tk-catch-errors nil))
      ;; Assert that an error is signaled for non-existent buffer
      (should-error (gptel-tk-tool-read-buffer-lines-count "*non-existent-buffer*") :type 'error))
    ;; Mode 2: tool returns the error as a string
-   (let ((gptel-tk-return-error t))
+   (let ((gptel-tk-catch-errors t))
      (let ((result (gptel-tk-tool-read-buffer-lines-count "*non-existent-buffer*")))
        ;; Assert that the returned error message matches expected format
        (should (string-equal
@@ -367,7 +367,7 @@ Optional keyword parameters:
 
      ;; Test error validation line limits:
      ;; Mode 1: tool re-signals the error
-     (let ((gptel-tk-return-error nil))
+     (let ((gptel-tk-catch-errors nil))
        ;; Assert that an error is signaled when COUNT > MAX
        (should-error (gptel-tk-tool-read-buffer-lines-count "*test-read-buffer*" 1 n) :type 'error)
        ;; Assert that an error is signaled when START < 1
@@ -375,7 +375,7 @@ Optional keyword parameters:
        ;; Assert that an error is signaled when START > total number of lines
        (should-error (gptel-tk-tool-read-buffer-lines-count "*test-read-buffer*" (1+ (count-lines (point-min) (point-max))) 1) :type 'error))
      ;; Mode 2: tool returns the error as a string for line validation errors
-     (let ((gptel-tk-return-error t))
+     (let ((gptel-tk-catch-errors t))
        ;; Assert that a COUNT > MAX error is signaled in return-string mode
        (let ((result (gptel-tk-tool-read-buffer-lines-count "*test-read-buffer*" 1 n)))
          (should (string-equal
@@ -486,11 +486,11 @@ Optional keyword parameters:
 
      ;; Test error handling for non-file buffers:
      ;; Mode 1: tool re-signals the error
-     (let ((gptel-tk-return-error nil))
+     (let ((gptel-tk-catch-errors nil))
        ;; Assert that an error is signaled when converting non-file buffer
        (should-error (gptel-tk-tool-buffer-to-file "*scratch*") :type 'error))
      ;; Mode 2: tool returns the error as a string
-     (let ((gptel-tk-return-error t))
+     (let ((gptel-tk-catch-errors t))
        (let ((result (gptel-tk-tool-buffer-to-file "*scratch*")))
          ;; Assert that the error message describes buffer not associated with file
          (should (string-equal
@@ -515,11 +515,11 @@ Optional keyword parameters:
 
      ;; Test error handling for non-existent files:
      ;; Mode 1: tool re-signals the error
-     (let ((gptel-tk-return-error nil))
+     (let ((gptel-tk-catch-errors nil))
        ;; Assert that an error is signaled when converting non-existent file
        (should-error (gptel-tk-tool-file-to-buffer "/non/existent/file.tmp") :type 'error))
      ;; Mode 2: tool returns the error as a string
-     (let ((gptel-tk-return-error t))
+     (let ((gptel-tk-catch-errors t))
        (let ((result (gptel-tk-tool-file-to-buffer "/non/existent/file.tmp")))
          ;; Assert that the error message describes no buffer visiting file
          (should (string-equal
@@ -543,11 +543,11 @@ Optional keyword parameters:
 
    ;; Test error handling for non-existent buffers:
    ;; Mode 1: tool re-signals the error
-   (let ((gptel-tk-return-error nil))
+   (let ((gptel-tk-catch-errors nil))
      ;; Assert that an error is signaled when appending to missing buffer
      (should-error (gptel-tk-tool-append-to-buffer "*nope*" "text") :type 'error))
    ;; Mode 2: tool returns the error as a string
-   (let ((gptel-tk-return-error t))
+   (let ((gptel-tk-catch-errors t))
      (let ((result (gptel-tk-tool-append-to-buffer "*nope*" "text")))
        ;; Assert that the error message describes buffer not found
        (should (string-equal
@@ -571,13 +571,13 @@ Optional keyword parameters:
 
    ;; Test line number validation errors:
    ;; Mode 1: tool re-signals the error for invalid line numbers
-   (let ((gptel-tk-return-error nil))
+   (let ((gptel-tk-catch-errors nil))
      ;; Assert that an error is signaled for line number 0
      (should-error (gptel-tk-tool-insert-in-buffer "*test-insert*" "X" 0) :type 'error)
      ;; Assert that an error is signaled for line number beyond buffer
      (should-error (gptel-tk-tool-insert-in-buffer "*test-insert*" "Y" 999) :type 'error))
    ;; Mode 2: tool returns the error as a string
-   (let ((gptel-tk-return-error t))
+   (let ((gptel-tk-catch-errors t))
      ;; Assert that the error message is correct for line number 0
      (let ((result (gptel-tk-tool-insert-in-buffer "*test-insert*" "X" 0)))
        (should (string-equal
@@ -593,11 +593,11 @@ Optional keyword parameters:
 
    ;; Test error handling for non-existent buffers:
    ;; Mode 1: tool re-signals the error
-   (let ((gptel-tk-return-error nil))
+   (let ((gptel-tk-catch-errors nil))
      ;; Assert that an error is signaled when inserting into missing buffer
      (should-error (gptel-tk-tool-insert-in-buffer "*nope*" "text" 1) :type 'error))
    ;; Mode 2: tool returns the error as a string
-   (let ((gptel-tk-return-error t))
+   (let ((gptel-tk-catch-errors t))
      (let ((result (gptel-tk-tool-insert-in-buffer "*nope*" "text" 1)))
        ;; Assert that the error message describes buffer not found
        (should (string-equal
@@ -621,11 +621,11 @@ Optional keyword parameters:
 
    ;; Test error handling for non-existent buffers:
    ;; Mode 1: tool re-signals the error
-   (let ((gptel-tk-return-error nil))
+   (let ((gptel-tk-catch-errors nil))
      ;; Assert that an error is signaled when replacing missing buffer
      (should-error (gptel-tk-tool-replace-buffer "*nope*" "content") :type 'error))
    ;; Mode 2: tool returns the error as a string
-   (let ((gptel-tk-return-error t))
+   (let ((gptel-tk-catch-errors t))
      (let ((result (gptel-tk-tool-replace-buffer "*nope*" "content")))
        ;; Assert that the error message describes buffer not found
        (should (string-equal
@@ -654,11 +654,11 @@ Optional keyword parameters:
 
    ;; Test error handling for missing strings:
    ;; Mode 1: tool re-signals the error
-   (let ((gptel-tk-return-error nil))
+   (let ((gptel-tk-catch-errors nil))
      ;; Assert that an error is signaled when target string not found
      (should-error (gptel-tk-tool-edit-buffer-string "*test-edit*" "non-existent" "foo") :type 'error))
    ;; Mode 2: tool returns the error as a string
-   (let ((gptel-tk-return-error t))
+   (let ((gptel-tk-catch-errors t))
      (let ((result (gptel-tk-tool-edit-buffer-string "*test-edit*" "non-existent" "foo")))
        ;; Assert that the error message describes string not found
        (should (string-equal
@@ -667,11 +667,11 @@ Optional keyword parameters:
 
    ;; Test error handling for ambiguous strings:
    ;; Mode 1: tool re-signals the error
-   (let ((gptel-tk-return-error nil))
+   (let ((gptel-tk-catch-errors nil))
      ;; Assert that an error is signaled when target string appears multiple times
      (should-error (gptel-tk-tool-edit-buffer-string "*test-edit*" "hello" "hi") :type 'error))
    ;; Mode 2: tool returns the error as a string
-   (let ((gptel-tk-return-error t))
+   (let ((gptel-tk-catch-errors t))
      (let ((result (gptel-tk-tool-edit-buffer-string "*test-edit*" "hello" "hi")))
        ;; Assert that the error message describes string not unique
        (should (string-equal
@@ -680,11 +680,11 @@ Optional keyword parameters:
 
    ;; Test error handling for non-existent buffers:
    ;; Mode 1: tool re-signals the error
-   (let ((gptel-tk-return-error nil))
+   (let ((gptel-tk-catch-errors nil))
      ;; Assert that an error is signaled when editing missing buffer
      (should-error (gptel-tk-tool-edit-buffer-string "*non-existent-buffer*" "text" "replacement") :type 'error))
    ;; Mode 2: tool returns the error as a string
-   (let ((gptel-tk-return-error t))
+   (let ((gptel-tk-catch-errors t))
      (let ((result (gptel-tk-tool-edit-buffer-string "*non-existent-buffer*" "text" "replacement")))
        ;; Assert that the error message describes buffer not found
        (should (string-equal
@@ -708,13 +708,13 @@ Optional keyword parameters:
 
    ;; Test error handling for invalid line numbers:
    ;; Mode 1: tool re-signals the error
-   (let ((gptel-tk-return-error nil))
+   (let ((gptel-tk-catch-errors nil))
      ;; Assert that an error is signaled for line number 0
      (should-error (gptel-tk-tool-replace-buffer-line "*test-edit-line*" 0 "X") :type 'error)
      ;; Assert that an error is signaled for line number beyond buffer
      (should-error (gptel-tk-tool-replace-buffer-line "*test-edit-line*" 10 "X") :type 'error))
    ;; Mode 2: tool returns the error as a string
-   (let ((gptel-tk-return-error t))
+   (let ((gptel-tk-catch-errors t))
      (let ((result (gptel-tk-tool-replace-buffer-line "*test-edit-line*" 0 "X")))
        ;; Assert that the error message is correct for line number 0
        (should (string-equal
@@ -728,11 +728,11 @@ Optional keyword parameters:
 
   ;; Test error handling for non-existent buffers:
   ;; Mode 1: tool re-signals the error
-  (let ((gptel-tk-return-error nil))
+  (let ((gptel-tk-catch-errors nil))
     ;; Assert that an error is signaled when editing missing buffer
     (should-error (gptel-tk-tool-replace-buffer-line "*non-existent-buffer*" 1 "X") :type 'error))
   ;; Mode 2: tool returns the error as a string
-  (let ((gptel-tk-return-error t))
+  (let ((gptel-tk-catch-errors t))
     (let ((result (gptel-tk-tool-replace-buffer-line "*non-existent-buffer*" 1 "X")))
       ;; Assert that the error message describes buffer not found
       (should (string-equal
@@ -756,7 +756,7 @@ Optional keyword parameters:
 
    ;; Test error handling for invalid line ranges:
    ;; Mode 1: tool re-signals the error
-   (let ((gptel-tk-return-error nil))
+   (let ((gptel-tk-catch-errors nil))
      ;; Assert that an error is signaled for start line 0
      (should-error (gptel-tk-tool-replace-buffer-lines "*test-edit-buffer-lines*" 0 1 "X") :type 'error)
      ;; Assert that an error is signaled when end line before start line
@@ -764,7 +764,7 @@ Optional keyword parameters:
      ;; Assert that an error is signaled when end line beyond buffer
      (should-error (gptel-tk-tool-replace-buffer-lines "*test-edit-buffer-lines*" 2 5 "X") :type 'error))
    ;; Mode 2: tool returns the error as a string
-   (let ((gptel-tk-return-error t))
+   (let ((gptel-tk-catch-errors t))
      (let ((result (gptel-tk-tool-replace-buffer-lines "*test-edit-buffer-lines*" 0 1 "X")))
        ;; Assert that the error message is correct for start line 0
        (should (string-equal
@@ -783,11 +783,11 @@ Optional keyword parameters:
 
    ;; Test error handling for non-existent buffers:
    ;; Mode 1: tool re-signals the error
-   (let ((gptel-tk-return-error nil))
+   (let ((gptel-tk-catch-errors nil))
      ;; Assert that an error is signaled when editing missing buffer line range
      (should-error (gptel-tk-tool-replace-buffer-lines "*non-existent-buffer*" 1 1 "X") :type 'error))
    ;; Mode 2: tool returns the error as a string
-   (let ((gptel-tk-return-error t))
+   (let ((gptel-tk-catch-errors t))
      (let ((result (gptel-tk-tool-replace-buffer-lines "*non-existent-buffer*" 1 1 "X")))
        ;; Assert that the error message describes buffer not found
        (should (string-equal
@@ -818,11 +818,11 @@ Optional keyword parameters:
 
    ;; Test error handling for missing strings:
    ;; Mode 1: tool re-signals the error
-   (let ((gptel-tk-return-error nil))
+   (let ((gptel-tk-catch-errors nil))
      ;; Assert that an error is signaled when deleting non-existent string
      (should-error (gptel-tk-tool-delete-buffer-string "*test-delete*" "non-existent") :type 'error))
    ;; Mode 2: tool returns the error as a string
-   (let ((gptel-tk-return-error t))
+   (let ((gptel-tk-catch-errors t))
      (let ((result (gptel-tk-tool-delete-buffer-string "*test-delete*" "non-existent")))
        ;; Assert that the error message describes string not found
        (should (string-equal
@@ -831,11 +831,11 @@ Optional keyword parameters:
 
    ;; Test error handling for ambiguous strings:
    ;; Mode 1: tool re-signals the error
-   (let ((gptel-tk-return-error nil))
+   (let ((gptel-tk-catch-errors nil))
      ;; Assert that an error is signaled when deleting non-unique string
      (should-error (gptel-tk-tool-delete-buffer-string "*test-delete*" "hello") :type 'error))
    ;; Mode 2: tool returns the error as a string
-   (let ((gptel-tk-return-error t))
+   (let ((gptel-tk-catch-errors t))
      (let ((result (gptel-tk-tool-delete-buffer-string "*test-delete*" "hello")))
        ;; Assert that the error message describes string not unique
        (should (string-equal
@@ -844,11 +844,11 @@ Optional keyword parameters:
 
   ;; Test error handling for non-existent buffers:
   ;; Mode 1: tool re-signals the error
-  (let ((gptel-tk-return-error nil))
+  (let ((gptel-tk-catch-errors nil))
     ;; Assert that an error is signaled when deleting from missing buffer
     (should-error (gptel-tk-tool-delete-buffer-string "*non-existent-buffer*" "text") :type 'error))
   ;; Mode 2: tool returns the error as a string
-  (let ((gptel-tk-return-error t))
+  (let ((gptel-tk-catch-errors t))
     (let ((result (gptel-tk-tool-delete-buffer-string "*non-existent-buffer*" "text")))
       ;; Assert that the error message describes buffer not found
       (should (string-equal
@@ -872,7 +872,7 @@ Optional keyword parameters:
 
    ;; Test error handling for invalid line numbers:
    ;; Mode 1: tool re-signals the error
-   (let ((gptel-tk-return-error nil))
+   (let ((gptel-tk-catch-errors nil))
      ;; Assert that an error is signaled for line number 0
      (should-error (gptel-tk-tool-delete-buffer-line "*test-delete-line*" 0) :type 'error)
      ;; Assert that an error is signaled for line number beyond buffer
@@ -880,7 +880,7 @@ Optional keyword parameters:
      ;; Assert that an error is signaled when deleting from missing buffer
      (should-error (gptel-tk-tool-delete-buffer-line "*non-existent-buffer*" 2) :type 'error))
    ;; Mode 2: tool returns the error as a string
-   (let ((gptel-tk-return-error t))
+   (let ((gptel-tk-catch-errors t))
      (let ((result (gptel-tk-tool-delete-buffer-line "*test-delete-line*" 0)))
        ;; Assert that the error message is correct for line number 0
        (should (string-equal
@@ -913,7 +913,7 @@ Optional keyword parameters:
 
    ;; Test error handling for invalid line ranges:
    ;; Mode 1: tool re-signals the error
-   (let ((gptel-tk-return-error nil))
+   (let ((gptel-tk-catch-errors nil))
      ;; Assert that an error is signaled for invalid line ranges
      (should-error (gptel-tk-tool-delete-buffer-lines "*test-delete-buffer-lines*" 0 1) :type 'error)
      (should-error (gptel-tk-tool-delete-buffer-lines "*test-delete-buffer-lines*" 3 2) :type 'error)
@@ -921,7 +921,7 @@ Optional keyword parameters:
      ;; Assert that an error is signaled when deleting from missing buffer
      (should-error (gptel-tk-tool-delete-buffer-lines "*non-existent-buffer*" 2 3) :type 'error))
    ;; Mode 2: tool returns the error as a string
-   (let ((gptel-tk-return-error t))
+   (let ((gptel-tk-catch-errors t))
      (let ((result (gptel-tk-tool-delete-buffer-lines "*test-delete-buffer-lines*" 0 1)))
        ;; Assert that the returned message is correct for invalid start-line
        (should (string-equal
@@ -977,11 +977,11 @@ Optional keyword parameters:
    (insert "Line one.\nLine two.\nLine three.")
    (let ((invalid-edit '((:line-number 42 :old-string "nonexistent" :new-string "new"))))
      ;; Mode 1: tool re-signals the error
-     (let ((gptel-tk-return-error nil))
+     (let ((gptel-tk-catch-errors nil))
        ;; Assert that an error is signaled for out-of-bounds line number
        (should-error (gptel-tk-tool-apply-buffer-string-edits "*test-apply-edits*" invalid-edit) :type 'error))
      ;; Mode 2: tool returns the error as a string
-     (let ((gptel-tk-return-error t))
+     (let ((gptel-tk-catch-errors t))
        (let ((result (gptel-tk-tool-apply-buffer-string-edits "*test-apply-edits*" invalid-edit)))
          (should (stringp result))
          (should (string-match-p "line number exceeds buffer length" result))))))
@@ -993,11 +993,11 @@ Optional keyword parameters:
    "*test-apply-edits*" "Line one.\nLine two.\nLine three."
    (let ((edits2 '((:line-number 2 :old-string "two\nextra" :new-string "TWO"))))
      ;; Mode 1: tool re-signals the error
-     (let ((gptel-tk-return-error nil))
+     (let ((gptel-tk-catch-errors nil))
        ;; Assert that an error is signaled for a multi-line old-string
        (should-error (gptel-tk-tool-apply-buffer-string-edits "*test-apply-edits*" edits2) :type 'error))
      ;; Mode 2: tool returns the error as a string
-     (let ((gptel-tk-return-error t))
+     (let ((gptel-tk-catch-errors t))
        (let ((result (gptel-tk-tool-apply-buffer-string-edits "*test-apply-edits*" edits2)))
          ;; Assert that the returned message describes the multi-line error
          (should (string-equal
@@ -1010,11 +1010,11 @@ Optional keyword parameters:
    (let ((duplicate-edits '((:line-number 2 :old-string "two" :new-string "TWO")
                             (:line-number 2 :old-string "Line" :new-string "LINE"))))
      ;; Mode 1: tool re-signals the error
-     (let ((gptel-tk-return-error nil))
+     (let ((gptel-tk-catch-errors nil))
        ;; Assert that an error is signaled for duplicate line numbers
        (should-error (gptel-tk-tool-apply-buffer-string-edits "*test-apply-edits*" duplicate-edits) :type 'error))
      ;; Mode 2: tool returns the error as a string
-     (let ((gptel-tk-return-error t))
+     (let ((gptel-tk-catch-errors t))
        (let ((result (gptel-tk-tool-apply-buffer-string-edits "*test-apply-edits*" duplicate-edits)))
          ;; Assert that the returned message describes the duplicate line number error
          (should (string-equal
@@ -1023,13 +1023,13 @@ Optional keyword parameters:
 
   ;; Test non-existent buffer errors:
   ;; Mode 1: tool re-signals the error
-  (let ((gptel-tk-return-error nil))
+  (let ((gptel-tk-catch-errors nil))
     ;; Assert that an error is signaled for a non-existent buffer
     (should-error
      (gptel-tk-tool-apply-buffer-string-edits "*non-existent*" '((:line-number 1 :old-string "x" :new-string "y")))
      :type 'error))
   ;; Mode 2: tool returns the error as a string
-  (let ((gptel-tk-return-error t))
+  (let ((gptel-tk-catch-errors t))
     (let ((result
            (gptel-tk-tool-apply-buffer-string-edits "*non-existent*" '((:line-number 1 :old-string "x" :new-string "y")))))
       ;; Assert that the error message describes the missing buffer
@@ -1070,11 +1070,11 @@ Optional keyword parameters:
    (insert "Line one.\nLine two.\nLine three.")
    (let ((invalid-edit '((:line-number 42 :old-string "nonexistent" :new-string "new"))))
      ;; Mode 1: tool re-signals the error
-     (let ((gptel-tk-return-error nil))
+     (let ((gptel-tk-catch-errors nil))
        ;; Assert that an error is signaled for out-of-bounds line number
        (should-error (gptel-tk-tool-apply-buffer-line-edits "*test-apply-edits*" invalid-edit) :type 'error))
      ;; Mode 2: tool returns the error as a string
-     (let ((gptel-tk-return-error t))
+     (let ((gptel-tk-catch-errors t))
        (let ((result (gptel-tk-tool-apply-buffer-line-edits "*test-apply-edits*" invalid-edit)))
          (should (stringp result))
          (should (string-match-p "line number exceeds buffer length" result))))))
@@ -1086,11 +1086,11 @@ Optional keyword parameters:
    "*test-apply-edits*" "Line one.\nLine two.\nLine three."
    (let ((edits '((:line-number 2 :old-string "Line two.\nextra" :new-string "Line TWO."))))
      ;; Mode 1: tool re-signals the error
-     (let ((gptel-tk-return-error nil))
+     (let ((gptel-tk-catch-errors nil))
        ;; Assert that an error is signaled for a multi-line old-string
        (should-error (gptel-tk-tool-apply-buffer-line-edits "*test-apply-edits*" edits) :type 'error))
      ;; Mode 2: tool returns the error as a string
-     (let ((gptel-tk-return-error t))
+     (let ((gptel-tk-catch-errors t))
        (let ((result (gptel-tk-tool-apply-buffer-line-edits "*test-apply-edits*" edits)))
          ;; Assert that the error message describes the multi-line error
          (should (string-equal
@@ -1103,11 +1103,11 @@ Optional keyword parameters:
    (let ((duplicate-edits '((:line-number 2 :old-string "Line two." :new-string "Line TWO.")
                             (:line-number 2 :old-string "Line two." :new-string "Line ZWEI."))))
      ;; Mode 1: tool re-signals the error
-     (let ((gptel-tk-return-error nil))
+     (let ((gptel-tk-catch-errors nil))
        ;; Assert that an error is signaled for duplicate line numbers
        (should-error (gptel-tk-tool-apply-buffer-line-edits "*test-apply-edits*" duplicate-edits) :type 'error))
      ;; Mode 2: tool returns the error as a string
-     (let ((gptel-tk-return-error t))
+     (let ((gptel-tk-catch-errors t))
        (let ((result (gptel-tk-tool-apply-buffer-line-edits "*test-apply-edits*" duplicate-edits)))
          ;; Assert that the returned message describes the duplicate line number error
          (should (string-equal
@@ -1116,11 +1116,11 @@ Optional keyword parameters:
 
   ;; Test non-existent buffer errors:
   ;; Mode 1: tool re-signals the error
-  (let ((gptel-tk-return-error nil))
+  (let ((gptel-tk-catch-errors nil))
     ;; Assert that an error is signaled for a non-existent buffer
     (should-error (gptel-tk-tool-apply-buffer-line-edits "*non-existent*" '((:line-number 1 :old-string "x" :new-string "y"))) :type 'error))
   ;; Mode 2: tool returns the error as a string
-  (let ((gptel-tk-return-error t))
+  (let ((gptel-tk-catch-errors t))
     (let ((result (gptel-tk-tool-apply-buffer-line-edits "*non-existent*" '((:line-number 1 :old-string "x" :new-string "y")))))
       ;; Assert that the error message describes the missing buffer
       (should (string-equal
@@ -1172,7 +1172,7 @@ Optional keyword parameters:
 
          ;; Test review-specific error message format:
          (let ((edits '((:line-number 2 :old-string "two\nextra" :new-string "TWO"))))
-           (let ((gptel-tk-return-error t))
+           (let ((gptel-tk-catch-errors t))
              (let ((result (gptel-tk-tool-apply-buffer-string-edits-with-review "*test-review*" edits)))
                ;; Assert that error includes review-specific note
                (should (string-match-p "Note: No review was started" result))
@@ -1224,7 +1224,7 @@ Optional keyword parameters:
 
          ;; Test review-specific error message format:
          (let ((edits '((:line-number 2 :old-string "Line two.\nextra" :new-string "Line TWO."))))
-           (let ((gptel-tk-return-error t))
+           (let ((gptel-tk-catch-errors t))
              (let ((result (gptel-tk-tool-apply-buffer-line-edits-with-review "*test-review*" edits)))
                ;; Assert that error includes review-specific note
                (should (string-match-p "Note: No review was started" result))
@@ -1263,10 +1263,10 @@ Optional keyword parameters:
     (unwind-protect
         (progn
           ;; Mode 1: tool re-signals the error
-          (let ((gptel-tk-return-error nil))
+          (let ((gptel-tk-catch-errors nil))
             (should-error (gptel-tk-tool-create-file tmp-file "content") :type 'error))
           ;; Mode 2: tool returns the error as a string
-          (let ((gptel-tk-return-error t))
+          (let ((gptel-tk-catch-errors t))
             (let ((result (gptel-tk-tool-create-file tmp-file "content")))
               (should (string-equal result (format "gptel-tk-tool-create-file: Error: File already exists: %s" tmp-file))))))
       (when (file-exists-p tmp-file)
@@ -1328,10 +1328,10 @@ Optional keyword parameters:
     (unwind-protect
         (progn
           ;; Mode 1: tool re-signals the error
-          (let ((gptel-tk-return-error nil))
+          (let ((gptel-tk-catch-errors nil))
             (should-error (gptel-tk-tool-create-directory tmp-dir) :type 'error))
           ;; Mode 2: tool returns the error as a string
-          (let ((gptel-tk-return-error t))
+          (let ((gptel-tk-catch-errors t))
             (let ((result (gptel-tk-tool-create-directory tmp-dir)))
               (should (string-equal result (format "gptel-tk-tool-create-directory: Error: Directory already exists: %s" tmp-dir))))))
       (when (file-directory-p tmp-dir)
@@ -1342,10 +1342,10 @@ Optional keyword parameters:
     (unwind-protect
         (progn
           ;; Mode 1: tool re-signals the error
-          (let ((gptel-tk-return-error nil))
+          (let ((gptel-tk-catch-errors nil))
             (should-error (gptel-tk-tool-create-directory tmp-file) :type 'error))
           ;; Mode 2: tool returns the error as a string
-          (let ((gptel-tk-return-error t))
+          (let ((gptel-tk-catch-errors t))
             (let ((result (gptel-tk-tool-create-directory tmp-file)))
               (should (string-equal result (format "gptel-tk-tool-create-directory: Error: Directory already exists: %s" tmp-file))))))
       (when (file-exists-p tmp-file)
@@ -1404,11 +1404,11 @@ Optional keyword parameters:
 
         ;; Test missing function errors:
         ;; Mode 1: tool re-signals the error
-        (let ((gptel-tk-return-error nil))
+        (let ((gptel-tk-catch-errors nil))
           ;; Assert that a missing function raises an error
           (should-error (gptel-tk-tool-read-function "non-existent-function-xyz") :type 'error))
         ;; Mode 2: tool returns the error as a string
-        (let ((gptel-tk-return-error t))
+        (let ((gptel-tk-catch-errors t))
           (let ((result (gptel-tk-tool-read-function "non-existent-function-xyz")))
             ;; Assert that the returned error message is correct for missing function
             (should (string-equal
@@ -1448,11 +1448,11 @@ Optional keyword parameters:
 
         ;; Test missing library errors:
         ;; Mode 1: tool re-signals the error
-        (let ((gptel-tk-return-error nil))
+        (let ((gptel-tk-catch-errors nil))
           ;; Assert that a missing library raises an error
           (should-error (gptel-tk-tool-load-library "non-existent-library-xyz") :type 'error))
         ;; Mode 2: tool returns the error as a string
-        (let ((gptel-tk-return-error t))
+        (let ((gptel-tk-catch-errors t))
           (let ((result (gptel-tk-tool-load-library "non-existent-library-xyz")))
             ;; Assert that the returned error message is correct for missing library
             (should (string-equal
@@ -1480,11 +1480,11 @@ Optional keyword parameters:
 
 ;;         ;; Test missing library errors:
 ;;         ;; Mode 1: tool re-signals the error
-;;         (let ((gptel-tk-return-error nil))
+;;         (let ((gptel-tk-catch-errors nil))
 ;;           ;; Assert that a missing library raises an error
 ;;           (should-error (gptel-tk-tool-read-library "non-existent-library-xyz") :type 'error))
 ;;         ;; Mode 2: tool returns the error as a string
-;;         (let ((gptel-tk-return-error t))
+;;         (let ((gptel-tk-catch-errors t))
 ;;           (let ((result (gptel-tk-tool-read-library "non-existent-library-xyz")))
 ;;             ;; Assert that the returned error message is correct for missing library
 ;;             (should (string-equal
@@ -1514,11 +1514,11 @@ Optional keyword parameters:
 
   ;; Test non-existent symbol errors:
   ;; Mode 1: tool re-signals the error
-  (let ((gptel-tk-return-error nil))
+  (let ((gptel-tk-catch-errors nil))
     ;; Assert that an error is signaled when looking up non-existent symbol
     (should-error (gptel-tk-tool-read-info-symbol "non-existent-symbol-xyz") :type 'error))
   ;; Mode 2: tool returns the error as a string
-  (let ((gptel-tk-return-error t))
+  (let ((gptel-tk-catch-errors t))
     (let ((result (gptel-tk-tool-read-info-symbol "non-existent-symbol-xyz")))
       ;; Assert that the error message indicates symbol is not documented
       (should (string-equal
@@ -1539,11 +1539,11 @@ Optional keyword parameters:
 
   ;; Test non-existent node errors:
   ;; Mode 1: tool re-signals the error
-  (let ((gptel-tk-return-error nil))
+  (let ((gptel-tk-catch-errors nil))
     ;; Assert that an error is signaled when looking up non-existent node
     (should-error (gptel-tk-tool-read-info-node "Bogus Node 123") :type 'error))
   ;; Mode 2: tool returns the error as a string
-  (let ((gptel-tk-return-error t))
+  (let ((gptel-tk-catch-errors t))
     (let ((result (gptel-tk-tool-read-info-node "Bogus Node 123")))
       ;; Assert that the error message indicates node does not exist
       (should (string-equal
@@ -1569,11 +1569,11 @@ Optional keyword parameters:
 
   ;; Test error handling for non-existent buffer:
   ;; Mode 1: tool re-signals the error
-  (let ((gptel-tk-return-error nil))
+  (let ((gptel-tk-catch-errors nil))
     ;; Assert that an error is signaled when buffer not found
     (should-error (gptel-tk-tool-eval-buffer "*non-existent-buffer*") :type 'error))
   ;; Mode 2: tool returns the error as a string
-  (let ((gptel-tk-return-error t))
+  (let ((gptel-tk-catch-errors t))
     (let ((result (gptel-tk-tool-eval-buffer "*non-existent-buffer*")))
       ;; Assert that the error message describes buffer not found
       (should (string-match "Buffer '\\*non-existent-buffer\\*' not found" result))))
@@ -1582,11 +1582,11 @@ Optional keyword parameters:
   (with-temp-buffer-with-content
    "*test-eval-syntax-error*" "(defun broken-syntax (x\n  ;; missing closing paren"
    ;; Mode 1: tool re-signals the error
-   (let ((gptel-tk-return-error nil))
+   (let ((gptel-tk-catch-errors nil))
      ;; Assert that an error is signaled for malformed code
      (should-error (gptel-tk-tool-eval-buffer "*test-eval-syntax-error*") :type 'error))
    ;; Mode 2: tool returns the error as a string
-   (let ((gptel-tk-return-error t))
+   (let ((gptel-tk-catch-errors t))
      (let ((result (gptel-tk-tool-eval-buffer "*test-eval-syntax-error*")))
        ;; Assert that the error message indicates evaluation failure
        (should (string-match "gptel-tk-tool-eval-buffer:" result)))))))
@@ -1617,11 +1617,11 @@ Optional keyword parameters:
 
   ;; Test error handling for non-existent buffer:
   ;; Mode 1: tool re-signals the error
-  (let ((gptel-tk-return-error nil))
+  (let ((gptel-tk-catch-errors nil))
     ;; Assert that an error is signaled when buffer not found
     (should-error (gptel-tk-tool-eval-function "some-func" "*non-existent-buffer*") :type 'error))
   ;; Mode 2: tool returns the error as a string
-  (let ((gptel-tk-return-error t))
+  (let ((gptel-tk-catch-errors t))
     (let ((result (gptel-tk-tool-eval-function "some-func" "*non-existent-buffer*")))
       ;; Assert that the error message describes buffer not found
       (should (string-match "Buffer '\\*non-existent-buffer\\*' not found" result))))
@@ -1630,11 +1630,11 @@ Optional keyword parameters:
   (with-temp-buffer-with-content
    "*test-eval-no-func*" "(setq some-var 42)\n(+ 1 2 3)"
    ;; Mode 1: tool re-signals the error
-   (let ((gptel-tk-return-error nil))
+   (let ((gptel-tk-catch-errors nil))
      ;; Assert that an error is signaled when function not found
      (should-error (gptel-tk-tool-eval-function "non-existent-func" "*test-eval-no-func*") :type 'error))
    ;; Mode 2: tool returns the error as a string
-   (let ((gptel-tk-return-error t))
+   (let ((gptel-tk-catch-errors t))
      (let ((result (gptel-tk-tool-eval-function "non-existent-func" "*test-eval-no-func*")))
        ;; Assert that the error message describes function not found
        (should (string-match "Function 'non-existent-func' not found" result)))))
@@ -1643,11 +1643,11 @@ Optional keyword parameters:
   (with-temp-buffer-with-content
    "*test-eval-bad-func*" "(defun broken-func (x\n  ;; missing closing paren and body"
    ;; Mode 1: tool re-signals the error
-   (let ((gptel-tk-return-error nil))
+   (let ((gptel-tk-catch-errors nil))
      ;; Assert that an error is signaled for malformed function
      (should-error (gptel-tk-tool-eval-function "broken-func" "*test-eval-bad-func*") :type 'error))
    ;; Mode 2: tool returns the error as a string
-   (let ((gptel-tk-return-error t))
+   (let ((gptel-tk-catch-errors t))
      (let ((result (gptel-tk-tool-eval-function "broken-func" "*test-eval-bad-func*")))
        ;; Assert that the error message indicates evaluation failure
        (should (string-match "gptel-tk-tool-eval-function:" result))))))
@@ -1697,33 +1697,33 @@ Optional keyword parameters:
 
   ;; Test error handling for syntax errors:
   ;; Mode 1: tool re-signals the error
-  (let ((gptel-tk-return-error nil))
+  (let ((gptel-tk-catch-errors nil))
     ;; Assert that an error is signaled for malformed expression
     (should-error (gptel-tk-tool-eval-expression "(+ 1 2") :type 'error))
   ;; Mode 2: tool returns the error as a string
-  (let ((gptel-tk-return-error t))
+  (let ((gptel-tk-catch-errors t))
     (let ((result (gptel-tk-tool-eval-expression "(+ 1 2")))
       ;; Assert that the error message indicates syntax error
       (should (string-match "gptel-tk-tool-eval-expression:" result))))
 
   ;; Test error handling for runtime errors:
   ;; Mode 1: tool re-signals the error
-  (let ((gptel-tk-return-error nil))
+  (let ((gptel-tk-catch-errors nil))
     ;; Assert that an error is signaled for undefined function
     (should-error (gptel-tk-tool-eval-expression "(undefined-function-xyz 1 2)") :type 'error))
   ;; Mode 2: tool returns the error as a string
-  (let ((gptel-tk-return-error t))
+  (let ((gptel-tk-catch-errors t))
     (let ((result (gptel-tk-tool-eval-expression "(undefined-function-xyz 1 2)")))
       ;; Assert that the error message indicates runtime error
       (should (string-match "gptel-tk-tool-eval-expression:" result))))
 
   ;; Test error handling for division by zero:
   ;; Mode 1: tool re-signals the error
-  (let ((gptel-tk-return-error nil))
+  (let ((gptel-tk-catch-errors nil))
     ;; Assert that an error is signaled for division by zero
     (should-error (gptel-tk-tool-eval-expression "(/ 1 0)") :type 'error))
   ;; Mode 2: tool returns the error as a string
-  (let ((gptel-tk-return-error t))
+  (let ((gptel-tk-catch-errors t))
     (let ((result (gptel-tk-tool-eval-expression "(/ 1 0)")))
       ;; Assert that the error message indicates arithmetic error
       (should (string-match "gptel-tk-tool-eval-expression:" result)))))
@@ -1750,11 +1750,11 @@ Optional keyword parameters:
     (unwind-protect
         (let ((default-directory tmpdir))
           ;; Mode 1: tool re-signals the error
-          (let ((gptel-tk-return-error nil))
+          (let ((gptel-tk-catch-errors nil))
             ;; Assert that an error is signaled when not inside a project
             (should-error (gptel-tk-tool-project-get-root) :type 'error))
           ;; Mode 2: tool returns the error as a string
-          (let ((gptel-tk-return-error t))
+          (let ((gptel-tk-catch-errors t))
             (let ((res1 (gptel-tk-tool-project-get-root)))
               ;; Assert that the error message indicates not inside a project
               (should (string-equal "gptel-tk-tool-project-get-root: Error: Not inside a project." res1)))))
@@ -1800,11 +1800,11 @@ Optional keyword parameters:
      (unwind-protect
          (let ((default-directory tmpdir))
            ;; Mode 1: tool re-signals the error
-           (let ((gptel-tk-return-error nil))
+           (let ((gptel-tk-catch-errors nil))
              ;; Assert that an error is signaled when not inside a project
              (should-error (gptel-tk-tool-project-list-files) :type 'error))
            ;; Mode 2: tool returns the error as a string
-           (let ((gptel-tk-return-error t))
+           (let ((gptel-tk-catch-errors t))
              (let ((res2 (gptel-tk-tool-project-list-files)))
                ;; Assert that the error message indicates not inside a project
                (should (string-equal "gptel-tk-tool-project-list-files: Error: Not inside a project." res2)))))
@@ -1839,11 +1839,11 @@ Optional keyword parameters:
     (unwind-protect
         (let ((default-directory tmpdir))
           ;; Mode 1: tool re-signals the error
-          (let ((gptel-tk-return-error nil))
+          (let ((gptel-tk-catch-errors nil))
             ;; Assert that an error is signaled when not inside a project
             (should-error (gptel-tk-tool-project-find-files-glob "**/*.el") :type 'error))
           ;; Mode 2: tool returns the error as a string
-          (let ((gptel-tk-return-error t))
+          (let ((gptel-tk-catch-errors t))
             (let ((res1 (gptel-tk-tool-project-find-files-glob "**/*.el")))
               ;; Assert that the error message indicates no project found
               (should (string-equal "gptel-tk-tool-project-find-files-glob: Error: No project found in the current context." res1)))))
@@ -1874,11 +1874,11 @@ Optional keyword parameters:
 
      ;; Test invalid regexp errors:
      ;; Mode 1: tool re-signals the error
-     (let ((gptel-tk-return-error nil))
+     (let ((gptel-tk-catch-errors nil))
        ;; Assert that an error is signaled for invalid regexp
        (should-error (gptel-tk-tool-project-search-regexp "[") :type 'error))
      ;; Mode 2: tool returns the error as a string
-     (let ((gptel-tk-return-error t))
+     (let ((gptel-tk-catch-errors t))
        (let ((res (gptel-tk-tool-project-search-regexp "[")))
          ;; Assert that the error message describes regexp failure
          (should (string-match-p "^gptel-tk-tool-project-search-regexp: Error: Search command .* failed with status .* for regexp: \\[" res))))
@@ -1888,11 +1888,11 @@ Optional keyword parameters:
        (unwind-protect
            (let ((default-directory tmpdir))
              ;; Mode 1: tool re-signals the error
-             (let ((gptel-tk-return-error nil))
+             (let ((gptel-tk-catch-errors nil))
                ;; Assert that an error is signaled when not inside a project
                (should-error (gptel-tk-tool-project-search-regexp "x") :type 'error))
              ;; Mode 2: tool returns the error as a string
-             (let ((gptel-tk-return-error t))
+             (let ((gptel-tk-catch-errors t))
                (let ((res2 (gptel-tk-tool-project-search-regexp "x")))
                  ;; Assert that the error message indicates not inside a project
                  (should (string-equal "gptel-tk-tool-project-search-regexp: Error: Not inside a project." res2)))))
@@ -1928,11 +1928,11 @@ Optional keyword parameters:
 
   ;; Test unknown test errors:
   ;; Mode 1: tool re-signals the error
-  (let ((gptel-tk-return-error nil))
+  (let ((gptel-tk-catch-errors nil))
     ;; Assert that an error is signaled for an unknown test name
     (should-error (gptel-tk-tool-ert-run-by-name "NON_EXISTENT_TEST") :type 'error))
   ;; Mode 2: tool returns the error as a string
-  (let ((gptel-tk-return-error t))
+  (let ((gptel-tk-catch-errors t))
     (let ((res (gptel-tk-tool-ert-run-by-name "NON_EXISTENT_TEST")))
       ;; Assert that the formatted error string matches expected error message
       (should (string-equal
