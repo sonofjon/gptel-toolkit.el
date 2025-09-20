@@ -1,31 +1,44 @@
-;;; gptel-toolkit-tools.el --- Built-in tools for gptel-toolkit  -*- lexical-binding: t; -*-
+;;; gptel-toolkit-tools.el --- Tools for gptel-toolkit  -*- lexical-binding: t; -*-
 ;;
 ;; Copyright (C) 2025 Andreas Jonsson
-
-;; Author: Andreas Jonsson <ajdev8@gmail.com>
-;; Maintainer: Andreas Jonsson <ajdev8@gmail.com>
-;; URL: https://github.com/sonofjon/gptel-tool-kit
-;; Version: 0.1.0
-;; Package-Requires: ((emacs "28.1") (gptel "0.8.0") (gptel-toolkit-core "0.1.0"))
-;; Keywords: tools, ai, gptel, buffers, files, project, emacs
-
-;; This file contains the built-in tool implementations migrated from aj8-gptel.el
-;; All tools are defined using the gptel-tk-define macro from the framework
-
+;;
 ;;; Commentary:
 ;;
-;; This file contains the built-in tool implementations for gptel-toolkit.
-;; All tools are defined using the gptel-tk-define macro from the framework
-;; and provide comprehensive functionality for:
+;; This file contains 35+ tool implementations for gptel-toolkit, organized
+;; into five categories. All tools are defined using the gptel-tk-define
+;; macro and registered with gptel.
 ;;
-;; - Buffer operations (search, edit, create, delete)
-;; - File operations (create files and directories)
-;; - Emacs introspection (documentation, function reading, evaluation)
-;; - Project management (file listing, searching)
-;; - Testing support (ERT test running)
+;; Tool Categories:
 ;;
-;; These tools are automatically registered with gptel when this file is loaded.
-
+;; 1. Buffer Operations (20 tools):
+;;    - Search: regexp search with optional column numbers
+;;    - Read: line-based reading with configurable limits
+;;    - Edit: string/line replacement, insertion, deletion, append, replace
+;;    - Batch edits: multiple edits with optional Ediff-based review
+;;    - Management: listing, file association
+;;
+;; 2. File Operations (2 tools):
+;;    - File creation
+;;    - Directory creation with recursive support
+;;
+;; 3. Emacs Integration (8 tools):
+;;    - Documentation: function docs, info nodes, symbol lookup
+;;    - Library loading: load libraries into buffers for viewing
+;;    - Code execution: evaluation of functions, buffers, and expressions
+;;
+;; 4. Project Management (4 tools):
+;;    - Root detection
+;;    - File listing with optional line counts
+;;    - Pattern-based file finding (glob support)
+;;    - Content searching with ripgrep/git grep integration
+;;
+;; 5. Testing Support (4 tools):
+;;    - ERT test listing
+;;    - Test execution and result reporting
+;;
+;; All tools include error handling and consistent output formatting.
+;; Tools that create files or execute code include confirmation prompts.
+;;
 ;;; Code:
 
 (require 'gptel-toolkit-core)

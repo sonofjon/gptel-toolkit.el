@@ -1,11 +1,4 @@
 ;;; gptel-toolkit-test.el --- Tests for gptel-toolkit -*- lexical-binding: t; -*-
-;;
-;; Author: Andreas Jonsson <ajdev8@gmail.com>
-;; Maintainer: Andreas Jonsson <ajdev8@gmail.com>
-;; URL: https://github.com/sonofjon/gptel-tool-kit
-;; Version: 0.1
-;; Package-Requires: ((emacs "28.1") (gptel "0.8.0"))
-;; Keywords: internal
 
 (message "Running gptel tool tests")
 

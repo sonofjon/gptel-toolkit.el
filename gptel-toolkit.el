@@ -1,25 +1,30 @@
-;;; gptel-toolkit.el --- Development framework for gptel tools -*- lexical-binding: t; -*-
+;;; gptel-toolkit.el --- Toolkit and framework for gptel tools -*- lexical-binding: t; -*-
 ;;
 ;; Copyright (C) 2025 Andreas Jonsson
-
+;;
 ;; Author: Andreas Jonsson <ajdev8@gmail.com>
 ;; Maintainer: Andreas Jonsson <ajdev8@gmail.com>
 ;; URL: https://github.com/sonofjon/gptel-toolkit
 ;; Version: 0.1.0
-;; Package-Requires: ((emacs "28.1") (gptel "0.8.0"))
-;; Keywords: tools, ai, development, gptel
-
+;; Package-Requires: ((emacs "28.1") (gptel "0.9.5"))
+;; Keywords: tools, ai, development
+;;
 ;;; Commentary:
 ;;
-;; gptel-toolkit provides a comprehensive framework for building robust
-;; tools that integrate with the gptel package. It includes advanced tool
-;; macros, error handling, logging, and development utilities.
+;; gptel-toolkit provides 35+ built-in tools and a framework that extends
+;; gptel with enhanced tool capabilities.
 ;;
-;; Features:
-;; - Advanced tool definition macros with automatic logging
-;; - Comprehensive error handling and reporting
-;; - Built-in tool templates and examples
-;; - Development utilities for testing and debugging
+;; Framework:
+;; - Tool definition macro that adds logging, messaging, and error handling
+;; - Configurable tool naming with prefix support
+;;
+;; Built-in Tools (35+ tools across 5 categories):
+;; - Buffer operations: list, search, read, edit, batch edits with review
+;; - File operations: create files and directories
+;; - Emacs integration: documentation lookup, function evaluation, library
+;;   loading
+;; - Project management: file listing, searching, root detection
+;; - Testing support: ERT test execution and listing
 ;;
 ;;; Code:
 

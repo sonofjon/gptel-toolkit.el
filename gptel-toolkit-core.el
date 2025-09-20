@@ -1,20 +1,23 @@
-;;; gptel-toolkit-core.el --- Core framework for gptel tools -*- lexical-binding: t; -*-
-
+;;; gptel-toolkit-core.el --- Core framework for gptel-toolkit -*- lexical-binding: t; -*-
+;;
 ;; Copyright (C) 2025 Andreas Jonsson
-
-;; Author: Andreas Jonsson <ajdev8@gmail.com>
-;; Maintainer: Andreas Jonsson <ajdev8@gmail.com>
-;; URL: https://github.com/sonofjon/gptel-tool-kit
-;; Version: 0.1.0
-;; Package-Requires: ((emacs "28.1"))
-;; Keywords: tools, ai, development, framework
-
+;;
 ;;; Commentary:
-
-;; This package provides the core framework for defining gptel tools.
-;; It includes macros for clean tool definition, automatic logging,
-;; error handling, and boolean parameter normalization.
-
+;;
+;; This package provides the core framework that extends gptel with enhanced
+;; tool capabilities.
+;;
+;; Features:
+;; - Tool definition macro (gptel-tk-define) that provides:
+;;   - Logging with optional suppression
+;;   - Mini-buffer messaging with filtering and truncation
+;;   - Error handling (tools return strings or re-signal errors)
+;;   - JSON compatibility with :json-false to nil normalization
+;; - Configurable tool naming with prefix support
+;;
+;; The framework handles boilerplate around tool definition, providing
+;; consistent logging, messaging, and error handling across all tools.
+;;
 ;;; Code:
 
 ;;; Configuration Variables
