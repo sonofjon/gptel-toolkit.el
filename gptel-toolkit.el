@@ -32,6 +32,7 @@
 
 ;; Load the framework components
 (require 'gptel-toolkit-core)
+(require 'gptel-toolkit-tools)
 
 ;; Load built-in tools (optional)
 ;; (require 'gptel-toolkit-tools)
@@ -41,30 +42,78 @@
   :group 'tools
   :prefix "gptel-tk-")
 
-(defcustom gptel-tk-auto-load-builtin-tools nil
-  "Whether to automatically load built-in tools.
-When non-nil, the built-in tools will be loaded and registered with gptel."
-  :type 'boolean
-  :group 'gptel-toolkit)
+(defun gptel-tk--is-toolkit-tool-p (tool)
+  "Return non-nil if TOOL is a gptel-toolkit tool.
+A toolkit tool is one whose function name starts with 'gptel-tk-tool-'."
+  (let ((func (gptel-tool-function tool)))
+    (and func
+         (symbolp func)
+         (string-prefix-p "gptel-tk-tool-" (symbol-name func)))))
+
+(defun gptel-tk--filter-toolkit-tools (predicate)
+  "Remove toolkit tools from `gptel-tools' based on PREDICATE.
+PREDICATE is called with each toolkit tool and should return non-nil
+for tools to be removed. Returns the number of tools removed."
+  (let ((removed-count 0))
+    (setq gptel-tools
+          (seq-remove (lambda (tool)
+                        (when (and (gptel-tk--is-toolkit-tool-p tool)
+                                   (funcall predicate tool))
+                          (cl-incf removed-count)
+                          t))
+                      gptel-tools))
+    removed-count))
 
 ;;;###autoload
-(defun gptel-toolkit-enable-builtin-tools ()
-  "Enable and register all built-in tools with gptel."
+(defun gptel-tk-enable-builtin-tools ()
+  "Enable all built-in tools for gptel use.
+
+Populates `gptel-tools' with toolkit tools from `gptel--known-tools',
+excluding any tools listed in `gptel-tk-excluded-tools'.
+
+This function affects tools whose function names start with
+'gptel-tk-tool-'.  This includes the built-in toolkit tools, and any
+custom tools that users have created using the same naming
+convention. Custom tools created with `gptel-tk-define' using other
+names are unaffected."
   (interactive)
-  (require 'gptel-toolkit-tools)
-  (message "gptel-toolkit: Built-in tools enabled"))
+  (let* ((all-tools (mapcan (lambda (entry) (mapcar #'cdr (cdr entry))) gptel--known-tools))
+         (enabled-tools (seq-remove (lambda (tool)
+                                      (member (gptel-tool-name tool) gptel-tk-excluded-tools))
+                                    all-tools))
+         (excluded-count (- (length all-tools) (length enabled-tools))))
+    (setq gptel-tools enabled-tools)
+    (if gptel-tk-excluded-tools
+        (message "gptel-toolkit: Built-in tools enabled (%d excluded)" excluded-count)
+      (message "gptel-toolkit: Built-in tools enabled"))))
 
 ;;;###autoload
-(defun gptel-toolkit-disable-builtin-tools ()
-  "Disable and unregister all built-in tools from gptel."
+(defun gptel-tk-disable-builtin-tools ()
+  "Disable all built-in tools for gptel use.
+Removes all tools whose function names start with 'gptel-tk-tool-' from
+the gptel tools list. This includes the built-in toolkit tools and any
+custom tools that use the same naming convention.  Custom tools created
+with `gptel-tk-define' using other names are unaffected."
   (interactive)
-  (when (featurep 'gptel-toolkit-tools)
-    ;; Implementation for tool removal will be added
-    (message "gptel-toolkit: Built-in tools disabled")))
+  (let ((removed-count (gptel-tk--filter-toolkit-tools (lambda (_tool) t))))
+    (message "gptel-toolkit: %d built-in tools disabled" removed-count)))
 
-;; Auto-load built-in tools if configured
-(when gptel-tk-auto-load-builtin-tools
-  (require 'gptel-toolkit-tools))
+;;;###autoload
+(defun gptel-tk-get-tools ()
+  "Return a list of gptel-toolkit tools.
+Returns all known toolkit tools minus those in
+`gptel-tk-excluded-tools'."
+  (seq-filter (lambda (tool)
+                (and (gptel-tk--is-toolkit-tool-p tool)
+                     (not (member (gptel-tool-name tool) gptel-tk-excluded-tools))))
+              (mapcan (lambda (entry) (mapcar #'cdr (cdr entry))) gptel--known-tools)))
+
+;;;###autoload
+(defun gptel-tk-get-tool-names ()
+  "Return a list of gptel-toolkit tool names.
+Returns all known toolkit tool names minus those in
+`gptel-tk-excluded-tools'."
+  (mapcar #'gptel-tool-name (gptel-tk-get-tools)))
 
 (provide 'gptel-toolkit)
 

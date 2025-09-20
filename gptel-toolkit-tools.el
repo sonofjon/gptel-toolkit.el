@@ -58,18 +58,6 @@ specific tools from the complete set of available GPTel tools."
   :type '(repeat string)
   :group 'gptel-toolkit)
 
-;;; Helpers
-
-(defun gptel-tk--get-minimal-tools ()
-  "Return a minimal list of GPTel tools.
-This function return a list of all known GPTel tools, excluding the
-tools listed in `gptel-tk-excluded-tools'.  This is a helper function
-for the GPTel presets."
-  (let ((all-tools (mapcan (lambda (category) (mapcar #'car (cdr category))) gptel--known-tools)))
-    (seq-remove (lambda (tool)
-                  (member tool gptel-tk-excluded-tools))
-                all-tools)))
-
 ;;; Tool definitions
 
 ;; TODO: Add tools:
