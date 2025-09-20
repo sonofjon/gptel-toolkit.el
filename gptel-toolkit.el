@@ -32,13 +32,9 @@
 
 ;; Load the framework components
 (require 'gptel-toolkit-core)
-(require 'gptel-toolkit-utils)
 
 ;; Load built-in tools (optional)
 ;; (require 'gptel-toolkit-tools)
-
-;; Load templates and examples
-;; (require 'gptel-toolkit-templates)
 
 (defgroup gptel-toolkit nil
   "Development framework for gptel tools."
