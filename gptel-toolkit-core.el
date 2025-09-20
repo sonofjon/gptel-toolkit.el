@@ -222,7 +222,9 @@ Returns a new property list with only the desired pairs for display."
 ;;; Logging Functions
 
 (defun gptel-tk--log-tool-call (tool-name args result)
-  "Log a tool call to the tool log buffer."
+  "Log a tool call to the tool log buffer.
+Appends to `gptel-tk-log-buffer', recording TOOL-NAME, ARGS and RESULT.
+Does nothing if `gptel-tk-suppress-logging' is non-nil."
   (unless gptel-tk-suppress-logging
     (let ((buf (get-buffer-create gptel-tk-log-buffer))
           (ts (format-time-string "%Y-%m-%d %T")))
@@ -236,7 +238,9 @@ Returns a new property list with only the desired pairs for display."
         (force-window-update (get-buffer-window buf))))))
 
 (defun gptel-tk--log-tool-error (tool-name args error-message)
-  "Log a tool error to the tool log buffer with optional ARGS."
+"Log a tool error to the tool log buffer.
+Appends to `gptel-tk-log-buffer', recording TOOL-NAME, ARGS and
+ERROR-MESSAGE.  Does nothing if `gptel-tk-suppress-logging' is non-nil."
   (unless gptel-tk-suppress-logging
     (let ((buf (get-buffer-create gptel-tk-log-buffer))
           (ts (format-time-string "%Y-%m-%d %T")))

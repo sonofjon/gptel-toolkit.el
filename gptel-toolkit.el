@@ -37,7 +37,7 @@
 ;; (require 'gptel-toolkit-tools)
 
 (defgroup gptel-toolkit nil
-  "Development framework for gptel tools."
+  "Toolkit and framework for gptel tools."
   :group 'tools
   :prefix "gptel-tk-")
 

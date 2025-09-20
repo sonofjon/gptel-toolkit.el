@@ -47,7 +47,7 @@
 ;;; Customization
 
 (defcustom gptel-tk-max-lines 100
-  "Default maximum number of lines any read tool will return."
+  "Maximum number of lines the buffer reading tool will return per call."
   :type 'integer
   :group 'gptel-toolkit)
 
