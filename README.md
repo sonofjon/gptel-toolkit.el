@@ -153,3 +153,28 @@ The toolkit provides several customization options to control its behavior:
 ```elisp
 (setq gptel-tk-excluded-tools '("buffer_edit" "file_create"))
 ```
+
+### Example Configuration
+
+```elisp
+(use-package gptel-toolkit
+  :after gptel
+  :custom
+  ;; Exclude some tools
+  (gptel-tk-excluded-tools '(;; Redundant
+                             "list_buffers"
+                             "insert_in_buffer"
+                             "replace_buffer_line"
+                             "delete_buffer_line"
+                             "delete_buffer_string"
+                             "apply_buffer_line_edits"
+                             "apply_buffer_line_edits_with_review"
+                             ;; Unwanted
+                             "replace_buffer"
+                             "ert_run_unit"))
+  :config
+  ;; Enable built-in tools
+  ;; (gptel-tk-enable-builtin-tools)
+  ;; Set built-in tools in preset
+  (plist-put (gptel-get-preset 'coding) :tools (gptel-tk-get-tool-names)))
+```
