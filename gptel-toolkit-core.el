@@ -68,60 +68,61 @@ Handles `:json-false` and `:false`."
     `(let ,bindings
        ,@body)))
 
-(defmacro gptel-tk--with-tool (tool-name args &rest body)
-  "Run BODY for TOOL-NAME and message/log the action.
+(defmacro gptel-tk--with-tool (tool-function-name args &rest body)
+  "Run BODY for TOOL-FUNCTION-NAME and message and log the action.
 
-TOOL-NAME is display name of the tool.  ARGS is a property list of
-keyword/value pairs describing the parameters passed to the tool
+TOOL-FUNCTION-NAME is the function name of the tool.  ARGS is a property
+list of keyword/value pairs describing the parameters passed to the tool
 function.
 
-If ARGS is nil the minibuffer will show only the tool name (no argument
-summary is displayed).
+The macro works as follows:
 
-The macro binds local variables `tool-name' and `args' and then:
+- Messages the tool registration name (prefixed with \"tool: \") and a
+  display-safe summary of filtered ARGS in the minibuffer.  If ARGS is
+  nil the minibuffer shows only the tool name (without arguments).
 
-- Messages the running tool name and a display-safe summary of filtered
-  ARGS in the minibuffer (using `gptel-tk--truncate-for-display').
-- Executes BODY and on success logs the full ARGS and the RESULT to the
-  `*gptel-tool-log*' buffer and returns RESULT.
+- Executes BODY, and on success logs the tool function name, full ARGS
+  and the result to the `gptel-tk-log-buffer' buffer.
+
 - On error it delegates to `gptel-tk--report-and-return-or-signal',
-  which messages/logs and returns or re-signals depending on
+  which messages, logs and returns or re-signals depending on
   `gptel-tk-catch-errors'."
-  `(let* ((tool-name ,tool-name)
+  `(let* ((tool-function-name ,tool-function-name)
           (args ,args)
           (display-args (gptel-tk--filter-display-args args)))
-     (message "%s%s" tool-name
+     (message "tool: %s%s" (gptel-tk--get-tool-name tool-function-name)
               (if display-args
                   (concat " " (prin1-to-string
                                (gptel-tk--truncate-for-display display-args)))
                 ""))
      (condition-case err
          (let ((result (progn ,@body)))
-           (gptel-tk--log-tool-call tool-name args result)
+           (gptel-tk--log-tool-call tool-function-name args result)
            result)
-       (error (gptel-tk--report-and-return-or-signal tool-name args err)))))
+       (error (gptel-tk--report-and-return-or-signal tool-function-name args err)))))
 
 ;;; Main Framework Macro
 
 ;;;###autoload
-(defmacro gptel-tk-define (name args docstring &rest body)
-  "Define a gptel tool with automatic logging and error handling.
+(defmacro gptel-tk-define (tool-function-symbol args docstring &rest body)
+  "Define a gptel tool with automatic messaging, logging and error handling.
 
-NAME is the function name, ARGS are the function arguments,
-DOCSTRING is the tool documentation, and BODY contains the tool implementation.
+TOOL-FUNCTION-SYMBOL is the tool function symbol, ARGS are the function
+arguments, DOCSTRING is the tool documentation, and BODY contains the
+tool implementation.
 
 Automatically normalizes any :json-false values to nil in the tool body."
-  (let* ((tool-name (symbol-name name))
+  (let* ((tool-function-name (symbol-name tool-function-symbol))
          (all-args (seq-remove (lambda (arg) (string-prefix-p "&" (symbol-name arg))) args))
          (raw-args-pairs (apply 'append
                                (mapcar (lambda (arg)
                                         `(,(intern (concat ":" (symbol-name arg))) ,arg))
                                       all-args))))
-    `(defun ,name ,args
+    `(defun ,tool-function-symbol ,args
        ,docstring
        (let ((raw-args (list ,@raw-args-pairs)))
          (gptel-tk--with-normalized-bools ,all-args
-           (gptel-tk--with-tool ,tool-name raw-args
+           (gptel-tk--with-tool ,tool-function-name raw-args
              ,@body))))))
 
 ;;; Helper Functions
@@ -129,8 +130,23 @@ Automatically normalizes any :json-false values to nil in the tool body."
 (defun gptel-tk--make-tool-name (base-name)
   "Create a tool registration name with appropriate prefix.
 BASE-NAME should be the clean tool name (e.g., 'buffer_search').
-Returns the name with gptel-tk-tool-prefix applied."
+Returns the name with `gptel-tk-tool-prefix' applied."
   (concat gptel-tk-tool-prefix base-name))
+
+(defun gptel-tk--get-tool-name (tool-function-name)
+  "Get the tool registration name for TOOL-FUNCTION-NAME."
+  (let* ((tool-function-symbol (intern tool-function-name))
+         (all-tools (append gptel-tools
+                            (mapcan (lambda (entry)
+                                      (mapcar #'cdr (cdr entry)))
+                                    gptel--known-tools)))
+         (tool (cl-find-if (lambda (tool)
+                             (eq (gptel-tool-function tool)
+                                 tool-function-symbol))
+                           all-tools)))
+    (if tool
+        (gptel-tool-name tool)
+      (error "Tool registration name not found for function: %s" tool-function-name))))
 
 ;;; Filtering and Truncation Functions
 
@@ -221,10 +237,10 @@ Returns a new property list with only the desired pairs for display."
 
 ;;; Logging Functions
 
-(defun gptel-tk--log-tool-call (tool-name args result)
+(defun gptel-tk--log-tool-call (tool-function-name args result)
   "Log a tool call to the tool log buffer.
-Appends to `gptel-tk-log-buffer', recording TOOL-NAME, ARGS and RESULT.
-Does nothing if `gptel-tk-suppress-logging' is non-nil."
+Appends to `gptel-tk-log-buffer', recording TOOL-FUNCTION-NAME, ARGS and
+RESULT.  Does nothing if `gptel-tk-suppress-logging' is non-nil."
   (unless gptel-tk-suppress-logging
     (let ((buf (get-buffer-create gptel-tk-log-buffer))
           (ts (format-time-string "%Y-%m-%d %T")))
@@ -232,14 +248,14 @@ Does nothing if `gptel-tk-suppress-logging' is non-nil."
         (goto-char (point-max))
         (insert (format "%s | %s | args=%s | result=%s\n"
                         ts
-                        tool-name
+                        tool-function-name
                         (prin1-to-string args)
                         (prin1-to-string (or result "<nil>"))))
         (force-window-update (get-buffer-window buf))))))
 
-(defun gptel-tk--log-tool-error (tool-name args error-message)
+(defun gptel-tk--log-tool-error (tool-function-name args error-message)
 "Log a tool error to the tool log buffer.
-Appends to `gptel-tk-log-buffer', recording TOOL-NAME, ARGS and
+Appends to `gptel-tk-log-buffer', recording TOOL-FUNCTION-NAME, ARGS and
 ERROR-MESSAGE.  Does nothing if `gptel-tk-suppress-logging' is non-nil."
   (unless gptel-tk-suppress-logging
     (let ((buf (get-buffer-create gptel-tk-log-buffer))
@@ -248,22 +264,22 @@ ERROR-MESSAGE.  Does nothing if `gptel-tk-suppress-logging' is non-nil."
         (goto-char (point-max))
         (insert (format "%s | %s | args=%s | error=%s\n"
                         ts
-                        tool-name
+                        tool-function-name
                         (prin1-to-string args)
                         (prin1-to-string error-message)))
         (force-window-update (get-buffer-window buf))))))
 
 ;;; Error Handling
 
-(defun gptel-tk--report-and-return-or-signal (tool-name args err)
-  "Report ERR for TOOL-NAME with ARGS, then return or re-signal.
-
+(defun gptel-tk--report-and-return-or-signal (tool-function-name args err)
+  "Report ERR for TOOL-FUNCTION-NAME with ARGS, then return or re-signal.
 This builds the exact minibuffer message string for ERR, messages it,
 and logs it.  If `gptel-tk-catch-errors' is non-nil, it returns that
 string; otherwise it re-signals the original error."
-  (let ((msg (format "%s: Error: %s" tool-name (error-message-string err))))
+  (let* ((tool-name (gptel-tk--get-tool-name tool-function-name))
+         (msg (format "tool: %s: Error: %s" tool-name (error-message-string err))))
     (message "%s" msg)
-    (gptel-tk--log-tool-error tool-name args (error-message-string err))
+    (gptel-tk--log-tool-error tool-function-name args (error-message-string err))
     (if gptel-tk-catch-errors
         msg
       (signal (car err) (cdr err)))))
