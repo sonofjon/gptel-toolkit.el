@@ -546,9 +546,10 @@ buffer only; the original buffer is not modified by this command."
       (error "File already exists: %s" full-path))
     (with-temp-buffer
       (insert content)
-      (let ((require-final-newline nil)
-            (mode-require-final-newline nil))
-        (write-file full-path)))
+      (gptel-tk--with-suppressed-messages
+       (let ((require-final-newline nil)
+             (mode-require-final-newline nil))
+         (write-file full-path))))
     (format "Successfully created file: %s" full-path)))
 
 (gptel-tk-define gptel-tk-tool-create-directory (dir-path)
@@ -577,7 +578,8 @@ buffer only; the original buffer is not modified by this command."
     (unless (and func-symbol (fboundp func-symbol))
       (error "Symbol's function definition is void: %s" function-name))
     ;; Try to find the source location
-    (let ((location (find-function-noselect func-symbol t)))
+    (let ((location (gptel-tk--with-suppressed-messages
+                     (find-function-noselect func-symbol t))))
       (with-current-buffer (car location)
         (save-excursion
           (goto-char (cdr location))
