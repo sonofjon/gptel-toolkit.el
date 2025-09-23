@@ -190,7 +190,7 @@ Optional keyword parameters:
             (let ((result (gptel-tk-tool-open-file-in-buffer tmp)))
               ;; Assert that the error message contains expected file path
               (should (string-equal
-                       (format "gptel-tk-tool-open-file-in-buffer: Error: No such file: %s" tmp)
+                       (format "tool: open_file_in_buffer: Error: No such file: %s" tmp)
                        result)))))
       (when (file-exists-p tmp)
         (delete-file tmp))))
@@ -208,7 +208,7 @@ Optional keyword parameters:
             (let ((result (gptel-tk-tool-open-file-in-buffer dir)))
               ;; Assert that the error message indicates directory is not a file
               (should (string-equal
-                       (format "gptel-tk-tool-open-file-in-buffer: Error: '%s' is a directory." dir)
+                       (format "tool: open_file_in_buffer: Error: '%s' is a directory." dir)
                        result)))))
       (when (file-directory-p dir)
         (delete-directory dir t)))))
@@ -249,7 +249,7 @@ Optional keyword parameters:
      (let ((result (gptel-tk-tool-buffer-search-regexp "*non-existent-buffer*" "test")))
        ;; Assert that the error message matches expected format
        (should (string-equal
-                "gptel-tk-tool-buffer-search-regexp: Error: Buffer '*non-existent-buffer*' does not exist"
+                "tool: buffer_search_regexp: Error: Buffer '*non-existent-buffer*' does not exist"
                 result))))
 
    ;; Test invalid regexp error handling:
@@ -262,7 +262,7 @@ Optional keyword parameters:
      (let ((result (gptel-tk-tool-buffer-search-regexp "*test-buffer-search*" "[invalid")))
        ;; Assert that the returned error message matches expected format
        (should (string-equal
-                "gptel-tk-tool-buffer-search-regexp: Error: Invalid regexp: \"Unmatched [ or [^\""
+                "tool: buffer_search_regexp: Error: Invalid regexp: \"Unmatched [ or [^\""
                 result))))))
 
 ;; (ert-deftest test-gptel-tk-read-buffer-lines ()
@@ -347,7 +347,7 @@ Optional keyword parameters:
      (let ((result (gptel-tk-tool-read-buffer-lines-count "*non-existent-buffer*")))
        ;; Assert that the returned error message matches expected format
        (should (string-equal
-                "gptel-tk-tool-read-buffer-lines-count: Error: Buffer '*non-existent-buffer*' not found."
+                "tool: read_buffer_lines_count: Error: Buffer '*non-existent-buffer*' not found."
                 result))))
 
    ;; Test handling of max number of lines:
@@ -379,17 +379,17 @@ Optional keyword parameters:
        ;; Assert that a COUNT > MAX error is signaled in return-string mode
        (let ((result (gptel-tk-tool-read-buffer-lines-count "*test-read-buffer*" 1 n)))
          (should (string-equal
-                  (format "gptel-tk-tool-read-buffer-lines-count: Error: Requested COUNT (%d) exceeds maximum allowed (%d)." n gptel-tk-max-lines)
+                  (format "tool: read_buffer_lines_count: Error: Requested COUNT (%d) exceeds maximum allowed (%d)." n gptel-tk-max-lines)
                   result)))
        ;; Assert that a START < 1 error is signaled in return-string mode
        (let ((result (gptel-tk-tool-read-buffer-lines-count "*test-read-buffer*" 0 2)))
          (should (string-equal
-                  "gptel-tk-tool-read-buffer-lines-count: Error: START-LINE must be >= 1"
+                  "tool: read_buffer_lines_count: Error: START-LINE must be >= 1"
                   result)))
        ;; Assert that a START > total number of lines error is signaled in return-string mode
        (let ((result (gptel-tk-tool-read-buffer-lines-count "*test-read-buffer*" (1+ (count-lines (point-min) (point-max))) 1)))
          (should (string-equal
-                  (format "gptel-tk-tool-read-buffer-lines-count: Error: START-LINE (%d) exceeds buffer length (%d)."
+                  (format "tool: read_buffer_lines_count: Error: START-LINE (%d) exceeds buffer length (%d)."
                           (1+ (count-lines (point-min) (point-max)))
                           (count-lines (point-min) (point-max)))
                   result))))
@@ -585,7 +585,7 @@ Optional keyword parameters:
        (let ((result (gptel-tk-tool-buffer-to-file "*scratch*")))
          ;; Assert that the error message describes buffer not associated with file
          (should (string-equal
-                  "gptel-tk-tool-buffer-to-file: Error: Buffer '*scratch*' not found or not associated with a file."
+                  "tool: buffer_to_file: Error: Buffer '*scratch*' not found or not associated with a file."
                   result)))))))
 
 (ert-deftest test-gptel-tk-file-to-buffer ()
@@ -614,7 +614,7 @@ Optional keyword parameters:
        (let ((result (gptel-tk-tool-file-to-buffer "/non/existent/file.tmp")))
          ;; Assert that the error message describes no buffer visiting file
          (should (string-equal
-                  (format "gptel-tk-tool-file-to-buffer: Error: No buffer is visiting the file '%s'." "/non/existent/file.tmp")
+                  (format "tool: file_to_buffer: Error: No buffer is visiting the file '%s'." "/non/existent/file.tmp")
                   result)))))))
 
 (ert-deftest test-gptel-tk-append-to-buffer ()
@@ -642,7 +642,7 @@ Optional keyword parameters:
      (let ((result (gptel-tk-tool-append-to-buffer "*nope*" "text")))
        ;; Assert that the error message describes buffer not found
        (should (string-equal
-                "gptel-tk-tool-append-to-buffer: Error: Buffer '*nope*' not found."
+                "tool: append_to_buffer: Error: Buffer '*nope*' not found."
                 result))))))
 
 (ert-deftest test-gptel-tk-insert-in-buffer ()
@@ -672,12 +672,12 @@ Optional keyword parameters:
      ;; Assert that the error message is correct for line number 0
      (let ((result (gptel-tk-tool-insert-in-buffer "*test-insert*" "X" 0)))
        (should (string-equal
-                "gptel-tk-tool-insert-in-buffer: Error: LINE-NUMBER must be >= 1"
+                "tool: insert_in_buffer: Error: LINE-NUMBER must be >= 1"
                 result)))
      ;; Assert that the error message is correct for line number beyond buffer
      (let ((result (gptel-tk-tool-insert-in-buffer "*test-insert*" "Y" 999)))
        (should (string-equal
-                (format "gptel-tk-tool-insert-in-buffer: Error: LINE-NUMBER (999) exceeds buffer length (%d)."
+                (format "tool: insert_in_buffer: Error: LINE-NUMBER (999) exceeds buffer length (%d)."
                         (with-current-buffer (get-buffer "*test-insert*")
                           (count-lines (point-min) (point-max))))
                 result))))
@@ -692,7 +692,7 @@ Optional keyword parameters:
      (let ((result (gptel-tk-tool-insert-in-buffer "*nope*" "text" 1)))
        ;; Assert that the error message describes buffer not found
        (should (string-equal
-                "gptel-tk-tool-insert-in-buffer: Error: Buffer '*nope*' not found."
+                "tool: insert_in_buffer: Error: Buffer '*nope*' not found."
                 result))))))
 
 (ert-deftest test-gptel-tk-replace-buffer ()
@@ -720,7 +720,7 @@ Optional keyword parameters:
      (let ((result (gptel-tk-tool-replace-buffer "*nope*" "content")))
        ;; Assert that the error message describes buffer not found
        (should (string-equal
-                "gptel-tk-tool-replace-buffer: Error: Buffer '*nope*' not found."
+                "tool: replace_buffer: Error: Buffer '*nope*' not found."
                 result))))))
 
 (ert-deftest test-gptel-tk-edit-buffer-string ()
@@ -753,7 +753,7 @@ Optional keyword parameters:
      (let ((result (gptel-tk-tool-edit-buffer-string "*test-edit*" "non-existent" "foo")))
        ;; Assert that the error message describes string not found
        (should (string-equal
-                "gptel-tk-tool-edit-buffer-string: Error: String 'non-existent' not found in buffer '*test-edit*'."
+                "tool: edit_buffer_string: Error: String 'non-existent' not found in buffer '*test-edit*'."
                 result))))
 
    ;; Test error handling for ambiguous strings:
@@ -766,7 +766,7 @@ Optional keyword parameters:
      (let ((result (gptel-tk-tool-edit-buffer-string "*test-edit*" "hello" "hi")))
        ;; Assert that the error message describes string not unique
        (should (string-equal
-                "gptel-tk-tool-edit-buffer-string: Error: String 'hello' is not unique in buffer '*test-edit*'. Found 2 occurrences."
+                "tool: edit_buffer_string: Error: String 'hello' is not unique in buffer '*test-edit*'. Found 2 occurrences."
                 result))))
 
    ;; Test error handling for non-existent buffers:
@@ -779,7 +779,7 @@ Optional keyword parameters:
      (let ((result (gptel-tk-tool-edit-buffer-string "*non-existent-buffer*" "text" "replacement")))
        ;; Assert that the error message describes buffer not found
        (should (string-equal
-                "gptel-tk-tool-edit-buffer-string: Error: Buffer '*non-existent-buffer*' not found."
+                "tool: edit_buffer_string: Error: Buffer '*non-existent-buffer*' not found."
                 result))))))
 
 (ert-deftest test-gptel-tk-replace-buffer-line ()
@@ -809,12 +809,12 @@ Optional keyword parameters:
      (let ((result (gptel-tk-tool-replace-buffer-line "*test-edit-line*" 0 "X")))
        ;; Assert that the error message is correct for line number 0
        (should (string-equal
-                "gptel-tk-tool-replace-buffer-line: Error: START-LINE must be >= 1"
+                "tool: replace_buffer_line: Error: START-LINE must be >= 1"
                 result)))
      (let ((result (gptel-tk-tool-replace-buffer-line "*test-edit-line*" 10 "X")))
        ;; Assert that the error message is correct for line number beyond buffer
        (should (string-equal
-                "gptel-tk-tool-replace-buffer-line: Error: END-LINE exceeds buffer length (3)."
+                "tool: replace_buffer_line: Error: END-LINE exceeds buffer length (3)."
                 result))))
 
   ;; Test error handling for non-existent buffers:
@@ -827,7 +827,7 @@ Optional keyword parameters:
     (let ((result (gptel-tk-tool-replace-buffer-line "*non-existent-buffer*" 1 "X")))
       ;; Assert that the error message describes buffer not found
       (should (string-equal
-               "gptel-tk-tool-replace-buffer-line: Error: Buffer '*non-existent-buffer*' not found."
+               "tool: replace_buffer_line: Error: Buffer '*non-existent-buffer*' not found."
                result))))))
 
 (ert-deftest test-gptel-tk-replace-buffer-lines ()
@@ -859,17 +859,17 @@ Optional keyword parameters:
      (let ((result (gptel-tk-tool-replace-buffer-lines "*test-edit-buffer-lines*" 0 1 "X")))
        ;; Assert that the error message is correct for start line 0
        (should (string-equal
-                "gptel-tk-tool-replace-buffer-lines: Error: START-LINE must be >= 1"
+                "tool: replace_buffer_lines: Error: START-LINE must be >= 1"
                 result)))
      (let ((result (gptel-tk-tool-replace-buffer-lines "*test-edit-buffer-lines*" 3 2 "X")))
        ;; Assert that the error message is correct for end line before start line
        (should (string-equal
-                "gptel-tk-tool-replace-buffer-lines: Error: END-LINE must be >= START-LINE"
+                "tool: replace_buffer_lines: Error: END-LINE must be >= START-LINE"
                 result)))
      (let ((result (gptel-tk-tool-replace-buffer-lines "*test-edit-buffer-lines*" 2 5 "X")))
        ;; Assert that the error message is correct for end line beyond buffer
        (should (string-equal
-                "gptel-tk-tool-replace-buffer-lines: Error: END-LINE exceeds buffer length (4)."
+                "tool: replace_buffer_lines: Error: END-LINE exceeds buffer length (4)."
                 result))))
 
    ;; Test error handling for non-existent buffers:
@@ -882,7 +882,7 @@ Optional keyword parameters:
      (let ((result (gptel-tk-tool-replace-buffer-lines "*non-existent-buffer*" 1 1 "X")))
        ;; Assert that the error message describes buffer not found
        (should (string-equal
-                "gptel-tk-tool-replace-buffer-lines: Error: Buffer '*non-existent-buffer*' not found."
+                "tool: replace_buffer_lines: Error: Buffer '*non-existent-buffer*' not found."
                 result))))))
 
 (ert-deftest test-gptel-tk-delete-buffer-string ()
@@ -917,7 +917,7 @@ Optional keyword parameters:
      (let ((result (gptel-tk-tool-delete-buffer-string "*test-delete*" "non-existent")))
        ;; Assert that the error message describes string not found
        (should (string-equal
-                "gptel-tk-tool-delete-buffer-string: Error: String 'non-existent' not found in buffer '*test-delete*'."
+                "tool: delete_buffer_string: Error: String 'non-existent' not found in buffer '*test-delete*'."
                 result))))
 
    ;; Test error handling for ambiguous strings:
@@ -930,7 +930,7 @@ Optional keyword parameters:
      (let ((result (gptel-tk-tool-delete-buffer-string "*test-delete*" "hello")))
        ;; Assert that the error message describes string not unique
        (should (string-equal
-                "gptel-tk-tool-delete-buffer-string: Error: String 'hello' is not unique in buffer '*test-delete*'. Found 2 occurrences."
+                "tool: delete_buffer_string: Error: String 'hello' is not unique in buffer '*test-delete*'. Found 2 occurrences."
                 result)))))
 
   ;; Test error handling for non-existent buffers:
@@ -943,7 +943,7 @@ Optional keyword parameters:
     (let ((result (gptel-tk-tool-delete-buffer-string "*non-existent-buffer*" "text")))
       ;; Assert that the error message describes buffer not found
       (should (string-equal
-               "gptel-tk-tool-delete-buffer-string: Error: Buffer '*non-existent-buffer*' not found."
+               "tool: delete_buffer_string: Error: Buffer '*non-existent-buffer*' not found."
                result)))))
 
 (ert-deftest test-gptel-tk-delete-buffer-line ()
@@ -975,17 +975,17 @@ Optional keyword parameters:
      (let ((result (gptel-tk-tool-delete-buffer-line "*test-delete-line*" 0)))
        ;; Assert that the error message is correct for line number 0
        (should (string-equal
-                "gptel-tk-tool-delete-buffer-line: Error: START-LINE must be >= 1"
+                "tool: delete_buffer_line: Error: START-LINE must be >= 1"
                 result)))
      (let ((result (gptel-tk-tool-delete-buffer-line "*test-delete-line*" 10)))
        ;; Assert that the error message is correct for line number beyond buffer
        (should (string-equal
-                "gptel-tk-tool-delete-buffer-line: Error: END-LINE exceeds buffer length (3)."
+                "tool: delete_buffer_line: Error: END-LINE exceeds buffer length (3)."
                 result)))
      ;; Assert that the error message is correct for missing buffer
      (let ((result (gptel-tk-tool-delete-buffer-line "*non-existent-buffer*" 2)))
        (should (string-equal
-                "gptel-tk-tool-delete-buffer-line: Error: Buffer '*non-existent-buffer*' not found."
+                "tool: delete_buffer_line: Error: Buffer '*non-existent-buffer*' not found."
                 result))))))
 
 (ert-deftest test-gptel-tk-delete-buffer-lines ()
@@ -1016,22 +1016,22 @@ Optional keyword parameters:
      (let ((result (gptel-tk-tool-delete-buffer-lines "*test-delete-buffer-lines*" 0 1)))
        ;; Assert that the returned message is correct for invalid start-line
        (should (string-equal
-                "gptel-tk-tool-delete-buffer-lines: Error: START-LINE must be >= 1"
+                "tool: delete_buffer_lines: Error: START-LINE must be >= 1"
                 result)))
      (let ((result (gptel-tk-tool-delete-buffer-lines "*test-delete-buffer-lines*" 3 2)))
        ;; Assert that the returned message is correct for end-line < start-line
        (should (string-equal
-                "gptel-tk-tool-delete-buffer-lines: Error: END-LINE must be >= START-LINE"
+                "tool: delete_buffer_lines: Error: END-LINE must be >= START-LINE"
                 result)))
      (let ((result (gptel-tk-tool-delete-buffer-lines "*test-delete-buffer-lines*" 2 5)))
        ;; Assert that the returned message is correct for end-line exceeding buffer
        (should (string-equal
-                "gptel-tk-tool-delete-buffer-lines: Error: END-LINE exceeds buffer length (3)."
+                "tool: delete_buffer_lines: Error: END-LINE exceeds buffer length (3)."
                 result)))
      ;; Assert that the returned message is correct for missing buffer
      (let ((result (gptel-tk-tool-delete-buffer-lines "*non-existent-buffer*" 2 3)))
        (should (string-equal
-                "gptel-tk-tool-delete-buffer-lines: Error: Buffer '*non-existent-buffer*' not found."
+                "tool: delete_buffer_lines: Error: Buffer '*non-existent-buffer*' not found."
                 result))))))
 
 (ert-deftest test-gptel-tk-apply-buffer-string-edits ()
@@ -1092,7 +1092,7 @@ Optional keyword parameters:
        (let ((result (gptel-tk-tool-apply-buffer-string-edits "*test-apply-edits*" edits2)))
          ;; Assert that the returned message describes the multi-line error
          (should (string-equal
-                  "gptel-tk-tool-apply-buffer-string-edits: Error: Could not apply edits to buffer '*test-apply-edits*': 1 (out of 1) failed.\n - line 2: old-string contains newline (old-string: \"two\nextra\")"
+                  "tool: apply_buffer_string_edits: Error: Could not apply edits to buffer '*test-apply-edits*': 1 (out of 1) failed.\n - line 2: old-string contains newline (old-string: \"two\nextra\")"
                   result))))))
 
   ;; Test duplicate line number errors:
@@ -1109,7 +1109,7 @@ Optional keyword parameters:
        (let ((result (gptel-tk-tool-apply-buffer-string-edits "*test-apply-edits*" duplicate-edits)))
          ;; Assert that the returned message describes the duplicate line number error
          (should (string-equal
-                  "gptel-tk-tool-apply-buffer-string-edits: Error: Duplicate line numbers found in edits: 2"
+                  "tool: apply_buffer_string_edits: Error: Duplicate line numbers found in edits: 2"
                   result))))))
 
   ;; Test non-existent buffer errors:
@@ -1125,7 +1125,7 @@ Optional keyword parameters:
            (gptel-tk-tool-apply-buffer-string-edits "*non-existent*" '((:line-number 1 :old-string "x" :new-string "y")))))
       ;; Assert that the error message describes the missing buffer
       (should (string-equal
-               "gptel-tk-tool-apply-buffer-string-edits: Error: Buffer '*non-existent*' not found."
+               "tool: apply_buffer_string_edits: Error: Buffer '*non-existent*' not found."
                result)))))
 
 (ert-deftest test-gptel-tk-apply-buffer-line-edits ()
@@ -1185,7 +1185,7 @@ Optional keyword parameters:
        (let ((result (gptel-tk-tool-apply-buffer-line-edits "*test-apply-edits*" edits)))
          ;; Assert that the error message describes the multi-line error
          (should (string-equal
-                  "gptel-tk-tool-apply-buffer-line-edits: Error: Could not apply edits to buffer '*test-apply-edits*': 1 (out of 1) failed.\n - line 2: old-string contains newline (old-string: \"Line two.\nextra\")"
+                  "tool: apply_buffer_line_edits: Error: Could not apply edits to buffer '*test-apply-edits*': 1 (out of 1) failed.\n - line 2: old-string contains newline (old-string: \"Line two.\nextra\")"
                   result))))))
 
   ;; Test duplicate line number errors:
@@ -1202,7 +1202,7 @@ Optional keyword parameters:
        (let ((result (gptel-tk-tool-apply-buffer-line-edits "*test-apply-edits*" duplicate-edits)))
          ;; Assert that the returned message describes the duplicate line number error
          (should (string-equal
-                  "gptel-tk-tool-apply-buffer-line-edits: Error: Duplicate line numbers found in edits: 2"
+                  "tool: apply_buffer_line_edits: Error: Duplicate line numbers found in edits: 2"
                   result))))))
 
   ;; Test non-existent buffer errors:
@@ -1215,7 +1215,7 @@ Optional keyword parameters:
     (let ((result (gptel-tk-tool-apply-buffer-line-edits "*non-existent*" '((:line-number 1 :old-string "x" :new-string "y")))))
       ;; Assert that the error message describes the missing buffer
       (should (string-equal
-               "gptel-tk-tool-apply-buffer-line-edits: Error: Buffer '*non-existent*' not found."
+               "tool: apply_buffer_line_edits: Error: Buffer '*non-existent*' not found."
                result)))))
 
 (ert-deftest test-gptel-tk-apply-buffer-string-edits-with-review ()
@@ -1359,7 +1359,7 @@ Optional keyword parameters:
           ;; Mode 2: tool returns the error as a string
           (let ((gptel-tk-catch-errors t))
             (let ((result (gptel-tk-tool-create-file tmp-file "content")))
-              (should (string-equal result (format "gptel-tk-tool-create-file: Error: File already exists: %s" tmp-file))))))
+              (should (string-equal result (format "tool: create_file: Error: File already exists: %s" tmp-file))))))
       (when (file-exists-p tmp-file)
         (delete-file tmp-file))))
 
@@ -1424,7 +1424,7 @@ Optional keyword parameters:
           ;; Mode 2: tool returns the error as a string
           (let ((gptel-tk-catch-errors t))
             (let ((result (gptel-tk-tool-create-directory tmp-dir)))
-              (should (string-equal result (format "gptel-tk-tool-create-directory: Error: Directory already exists: %s" tmp-dir))))))
+              (should (string-equal result (format "tool: create_directory: Error: Directory already exists: %s" tmp-dir))))))
       (when (file-directory-p tmp-dir)
         (delete-directory tmp-dir))))
 
@@ -1438,7 +1438,7 @@ Optional keyword parameters:
           ;; Mode 2: tool returns the error as a string
           (let ((gptel-tk-catch-errors t))
             (let ((result (gptel-tk-tool-create-directory tmp-file)))
-              (should (string-equal result (format "gptel-tk-tool-create-directory: Error: Directory already exists: %s" tmp-file))))))
+              (should (string-equal result (format "tool: create_directory: Error: Directory already exists: %s" tmp-file))))))
       (when (file-exists-p tmp-file)
         (delete-file tmp-file)))))
 
@@ -1503,7 +1503,7 @@ Optional keyword parameters:
           (let ((result (gptel-tk-tool-read-function "non-existent-function-xyz")))
             ;; Assert that the returned error message is correct for missing function
             (should (string-equal
-                     "gptel-tk-tool-read-function: Error: Symbol's function definition is void: non-existent-function-xyz"
+                     "tool: read_function: Error: Symbol's function definition is void: non-existent-function-xyz"
                      result)))))
     ;; Cleanup
     (when (get-buffer "find-func.el")
@@ -1547,7 +1547,7 @@ Optional keyword parameters:
           (let ((result (gptel-tk-tool-load-library "non-existent-library-xyz")))
             ;; Assert that the returned error message is correct for missing library
             (should (string-equal
-                     "gptel-tk-tool-load-library: Error: Can't find library: non-existent-library-xyz"
+                     "tool: load_library: Error: Can't find library: non-existent-library-xyz"
                      result)))))
     ;; Cleanup
     (when (get-buffer "project.el")
@@ -1613,7 +1613,7 @@ Optional keyword parameters:
     (let ((result (gptel-tk-tool-read-info-symbol "non-existent-symbol-xyz")))
       ;; Assert that the error message indicates symbol is not documented
       (should (string-equal
-               "gptel-tk-tool-read-info-symbol: Error: Not documented as a symbol: non-existent-symbol-xyz"
+               "tool: read_info_symbol: Error: Not documented as a symbol: non-existent-symbol-xyz"
                result)))))
 
 (ert-deftest test-gptel-tk-read-info-node ()
@@ -1638,7 +1638,7 @@ Optional keyword parameters:
     (let ((result (gptel-tk-tool-read-info-node "Bogus Node 123")))
       ;; Assert that the error message indicates node does not exist
       (should (string-equal
-               "gptel-tk-tool-read-info-node: Error: No such node or anchor: Bogus Node 123"
+               "tool: read_info_node: Error: No such node or anchor: Bogus Node 123"
                result)))))
 
 (ert-deftest test-gptel-tk-eval-buffer ()
@@ -1680,7 +1680,7 @@ Optional keyword parameters:
    (let ((gptel-tk-catch-errors t))
      (let ((result (gptel-tk-tool-eval-buffer "*test-eval-syntax-error*")))
        ;; Assert that the error message indicates evaluation failure
-       (should (string-match "gptel-tk-tool-eval-buffer:" result)))))))
+       (should (string-match "tool: eval_buffer:" result)))))))
 
 (ert-deftest test-gptel-tk-eval-function ()
   "Test `gptel-tk-tool-eval-function'."
@@ -1741,7 +1741,7 @@ Optional keyword parameters:
    (let ((gptel-tk-catch-errors t))
      (let ((result (gptel-tk-tool-eval-function "broken-func" "*test-eval-bad-func*")))
        ;; Assert that the error message indicates evaluation failure
-       (should (string-match "gptel-tk-tool-eval-function:" result))))))
+       (should (string-match "tool: eval_function:" result))))))
 
 (ert-deftest test-gptel-tk-eval-expression ()
   "Test `gptel-tk-tool-eval-expression'."
@@ -1795,7 +1795,7 @@ Optional keyword parameters:
   (let ((gptel-tk-catch-errors t))
     (let ((result (gptel-tk-tool-eval-expression "(+ 1 2")))
       ;; Assert that the error message indicates syntax error
-      (should (string-match "gptel-tk-tool-eval-expression:" result))))
+      (should (string-match "tool: eval_expression:" result))))
 
   ;; Test error handling for runtime errors:
   ;; Mode 1: tool re-signals the error
@@ -1806,7 +1806,7 @@ Optional keyword parameters:
   (let ((gptel-tk-catch-errors t))
     (let ((result (gptel-tk-tool-eval-expression "(undefined-function-xyz 1 2)")))
       ;; Assert that the error message indicates runtime error
-      (should (string-match "gptel-tk-tool-eval-expression:" result))))
+      (should (string-match "tool: eval_expression:" result))))
 
   ;; Test error handling for division by zero:
   ;; Mode 1: tool re-signals the error
@@ -1817,7 +1817,7 @@ Optional keyword parameters:
   (let ((gptel-tk-catch-errors t))
     (let ((result (gptel-tk-tool-eval-expression "(/ 1 0)")))
       ;; Assert that the error message indicates arithmetic error
-      (should (string-match "gptel-tk-tool-eval-expression:" result)))))
+      (should (string-match "tool: eval_expression:" result)))))
 
 ;;; 3.4. Category: Project
 
@@ -1848,7 +1848,7 @@ Optional keyword parameters:
           (let ((gptel-tk-catch-errors t))
             (let ((res1 (gptel-tk-tool-project-get-root)))
               ;; Assert that the error message indicates not inside a project
-              (should (string-equal "gptel-tk-tool-project-get-root: Error: Not inside a project." res1)))))
+              (should (string-equal "tool: project_get_root: Error: Not inside a project." res1)))))
       (when (file-directory-p tmpdir)
         (delete-directory tmpdir t)))))
 
@@ -1898,7 +1898,7 @@ Optional keyword parameters:
            (let ((gptel-tk-catch-errors t))
              (let ((res2 (gptel-tk-tool-project-list-files)))
                ;; Assert that the error message indicates not inside a project
-               (should (string-equal "gptel-tk-tool-project-list-files: Error: Not inside a project." res2)))))
+               (should (string-equal "tool: project_list_files: Error: Not inside a project." res2)))))
        (when (file-directory-p tmpdir)
          (delete-directory tmpdir t))))))
 
@@ -1937,7 +1937,7 @@ Optional keyword parameters:
           (let ((gptel-tk-catch-errors t))
             (let ((res1 (gptel-tk-tool-project-find-files-glob "**/*.el")))
               ;; Assert that the error message indicates no project found
-              (should (string-equal "gptel-tk-tool-project-find-files-glob: Error: No project found in the current context." res1)))))
+              (should (string-equal "tool: project_find_files_glob: Error: No project found in the current context." res1)))))
       (when (file-directory-p tmpdir)
         (delete-directory tmpdir t)))))
 
@@ -1972,7 +1972,7 @@ Optional keyword parameters:
      (let ((gptel-tk-catch-errors t))
        (let ((res (gptel-tk-tool-project-search-regexp "[")))
          ;; Assert that the error message describes regexp failure
-         (should (string-match-p "^gptel-tk-tool-project-search-regexp: Error: Search command .* failed with status .* for regexp: \\[" res))))
+         (should (string-match-p "^tool: project_search_regexp: Error: Search command .* failed with status .* for regexp: \\[" res))))
 
      ;; Test non-project directory errors:
      (let* ((tmpdir (make-temp-file "aj8-non-project" t)))
@@ -1986,7 +1986,7 @@ Optional keyword parameters:
              (let ((gptel-tk-catch-errors t))
                (let ((res2 (gptel-tk-tool-project-search-regexp "x")))
                  ;; Assert that the error message indicates not inside a project
-                 (should (string-equal "gptel-tk-tool-project-search-regexp: Error: Not inside a project." res2)))))
+                 (should (string-equal "tool: project_search_regexp: Error: Not inside a project." res2)))))
          (when (file-directory-p tmpdir)
            (delete-directory tmpdir t)))))))
 
