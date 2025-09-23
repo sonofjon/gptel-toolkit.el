@@ -402,6 +402,97 @@ Optional keyword parameters:
      ;; Assert that requesting COUNT == MAX should return first MAX lines
      (should (string-equal (gptel-tk-tool-read-buffer-lines-count "*test-read-buffer*" 1 gptel-tk-max-lines) first-n)))))
 
+(ert-deftest test-gptel-tk-read-buffer-definition ()
+  "Test `gptel-tk-tool-read-buffer-definition'."
+  :tags '(unit buffers)
+  (with-temp-buffer-with-content
+   "*test-read-function*" "(defun test-function-one (arg1 arg2)
+  \"A simple test function.\"
+  (+ arg1 arg2))
+
+(defmacro test-macro-two (var body)
+  \"A simple test macro.\"
+  `(let ((,var 42))
+     ,body))
+
+(defvar test-variable-three 100
+  \"A test variable.\")
+
+;; Some comment here
+
+(defun test-function-four ()
+  \"Another test function with no args.\"
+  (message \"Hello, world!\"))
+
+(defcustom test-custom-five \"default\"
+  \"A test custom variable.\"
+  :type 'string
+  :group 'test)"
+
+   ;; === SUCCESS CASES ===
+
+   ;; Test function definition extraction:
+   (let ((result (gptel-tk-tool-read-buffer-definition "*test-read-function*" "test-function-one")))
+     ;; Assert that function extraction returns the complete function definition
+     (should (string-match-p "(defun test-function-one (arg1 arg2)" result))
+     (should (string-match-p "A simple test function" result))
+     (should (string-match-p "(\\+ arg1 arg2)" result)))
+
+   ;; Test macro definition extraction:
+   (let ((result (gptel-tk-tool-read-buffer-definition "*test-read-function*" "test-macro-two")))
+     ;; Assert that macro extraction works correctly
+     (should (string-match-p "(defmacro test-macro-two (var body)" result))
+     (should (string-match-p "A simple test macro" result))
+     (should (string-match-p "`(let ((,var 42" result)))
+
+   ;; Test variable definition extraction:
+   (let ((result (gptel-tk-tool-read-buffer-definition "*test-read-function*" "test-variable-three")))
+     ;; Assert that variable extraction works correctly
+     (should (string-match-p "(defvar test-variable-three 100" result))
+     (should (string-match-p "A test variable" result)))
+
+   ;; Test function with no arguments:
+   (let ((result (gptel-tk-tool-read-buffer-definition "*test-read-function*" "test-function-four")))
+     ;; Assert that function with no args is extracted correctly
+     (should (string-match-p "(defun test-function-four ()" result))
+     (should (string-match-p "Another test function with no args" result))
+     (should (string-match-p "(message \"Hello, world!\"" result)))
+
+   ;; Test custom variable definition extraction:
+   (let ((result (gptel-tk-tool-read-buffer-definition "*test-read-function*" "test-custom-five")))
+     ;; Assert that defcustom extraction works correctly
+     (should (string-match-p "(defcustom test-custom-five \"default\"" result))
+     (should (string-match-p "A test custom variable" result))
+     (should (string-match-p ":type 'string" result)))
+
+   ;; === ERROR CASES ===
+
+   ;; Test error handling for non-existent buffer:
+   ;; Mode 1: tool re-signals the error
+   (let ((gptel-tk-catch-errors nil))
+     ;; Assert that an error is signaled when buffer not found
+     (should-error (gptel-tk-tool-read-buffer-definition "*non-existent-buffer*" "some-func") :type 'error))
+   ;; Mode 2: tool returns the error as a string
+   (let ((gptel-tk-catch-errors t))
+     (let ((result (gptel-tk-tool-read-buffer-definition "*non-existent-buffer*" "some-func")))
+       ;; Assert that the error message describes buffer not found
+       (should (string-equal
+                "tool: read_buffer_definition: Error: Buffer '*non-existent-buffer*' not found"
+                result))))
+
+   ;; Test error handling for definition not found:
+   ;; Mode 1: tool re-signals the error
+   (let ((gptel-tk-catch-errors nil))
+     ;; Assert that an error is signaled when definition not found
+     (should-error (gptel-tk-tool-read-buffer-definition "*test-read-function*" "non-existent-function") :type 'error))
+   ;; Mode 2: tool returns the error as a string
+   (let ((gptel-tk-catch-errors t))
+     (let ((result (gptel-tk-tool-read-buffer-definition "*test-read-function*" "non-existent-function")))
+       ;; Assert that the error message describes definition not found
+       (should (string-equal
+                "tool: read_buffer_definition: Error: Definition 'non-existent-function' not found in buffer"
+                result))))))
+
 (ert-deftest test-gptel-tk-list-buffers ()
   "Test `gptel-tk-tool-list-buffers'."
   :tags '(unit buffers)
@@ -1968,6 +2059,7 @@ in the variable `gptel-tools' alist."
                           ;; "aj8_read_buffer"
                           ;; "aj8_read_buffer_lines"
                           "read_buffer_lines_count"
+                          "read_buffer_definition"
                           "list_buffers"
                           "list_all_buffers"
                           "buffer_to_file"

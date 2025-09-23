@@ -144,6 +144,28 @@ available lines."
                        (line-end-position))))
                 (buffer-substring-no-properties start-pos end-pos)))))))))
 
+(gptel-tk-define gptel-tk-tool-read-buffer-definition (buffer-name definition-name)
+  "Return the definition of DEFINITION-NAME from BUFFER-NAME.
+Extracts any top-level definition (function, macro, variable, etc.)
+using Emacs's structural parsing. Includes any unsaved changes. Works
+language-agnostically wherever `beginning-of-defun` and `end-of-defun`
+work."
+  (let ((buffer (get-buffer buffer-name)))
+    (unless buffer
+      (error "Buffer '%s' not found" buffer-name))
+    (with-current-buffer buffer
+      (save-excursion
+        (goto-char (point-min))
+        ;; Search for the definition
+        (unless (re-search-forward (concat "^(.*\\b" (regexp-quote definition-name) "\\b") nil t)
+          (error "Definition '%s' not found in buffer" definition-name))
+        ;; Move to beginning of definition
+        (beginning-of-defun)
+        (let ((beg (point)))
+          ;; Move to end of definition
+          (end-of-defun)
+          (buffer-substring-no-properties beg (point)))))))
+
 (gptel-tk-define gptel-tk-tool-list-buffers (&optional include-counts)
   "Return a newline-separated string of open file-backed buffers.
 Each line is of the form \"NAME: PATH\", where NAME is the buffer name
@@ -1009,6 +1031,18 @@ TEST-NAME is the string name of the ERT test symbol to run."
                    :optional t
                    :description (format "The number of lines to read (must be <= %d)."
                                         gptel-tk-max-lines)))
+ :category "buffers")
+
+(gptel-make-tool
+ :function #'gptel-tk-tool-read-buffer-definition
+ :name (gptel-tk--make-tool-name "read_buffer_definition")
+ :description "Return the code of a given top-level definition (function, macro, variable, etc.) from a specified buffer. Uses Emacs's structural parsing to extract complete code blocks, including any unsaved changes. Works language-agnostically wherever `beginning-of-defun` and `end-of-defun` works."
+ :args (list '(:name "buffer-name"
+                     :type string
+                     :description "The name of the buffer containing the definition.")
+             '(:name "definition-name"
+                     :type string
+                     :description "The name of the definition to return the code for (function, macro, variable, etc.)."))
  :category "buffers")
 
 (gptel-make-tool
