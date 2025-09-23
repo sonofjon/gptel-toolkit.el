@@ -104,6 +104,44 @@ line."
               (find-file-noselect file-path))))
     (format "File '%s' opened in buffer '%s'." file-path (buffer-name buf))))
 
+;; (gptel-tk-define gptel-tk-tool-read-buffer (buffer-name)
+;;   "Return the contents of BUFFER-NAME."
+;;   (unless (buffer-live-p (get-buffer buffer))
+;;     (error "Buffer %s is not live." buffer))
+;;   (with-current-buffer buffer
+;;     (buffer-substring-no-properties (point-min) (point-max))))
+
+;; (gptel-tk-define gptel-tk-tool-read-buffer-lines (buffer-name &optional start-line end-line)
+;;   "Read lines from BUFFER-NAME between START-LINE and END-LINE.
+;; When START-LINE is nil it defaults to 1.  When END-LINE is nil it
+;; defaults to the end of the buffer.  If the length of the requested range
+;; exceeds `gptel-tk-max-lines' an error is signaled.  If START-LINE
+;; or END-LINE fall outside the buffer bounds they are silently truncated
+;; to the valid range (1..buffer length)."
+;;   (let ((buffer (get-buffer buffer-name)))
+;;     (unless buffer
+;;       (error "Buffer '%s' not found." buffer-name))
+;;     (with-current-buffer buffer
+;;       (save-excursion
+;;         (let* ((total-lines (count-lines (point-min) (point-max)))
+;;                (requested-start (or start-line 1))
+;;                (requested-end   (or end-line total-lines)))
+;;           (when (< requested-end requested-start)
+;;             (error "END-LINE must be >= START-LINE"))
+;;           (let* ((start-line (max 1 requested-start))
+;;                  (end-line   (min total-lines requested-end))
+;;                  (requested (1+ (- end-line start-line))))
+;;             (when (> requested gptel-tk-max-lines)
+;;               (error "Requested range length (%d) exceeds maximum allowed (%d)."
+;;                      requested gptel-tk-max-lines))
+;;             (goto-line start-line)
+;;             (let ((start-pos (point)))
+;;               (let ((transient-mark-mode nil))   ; suppress "Mark set" messages
+;;                 (goto-char (point-min))
+;;                 (forward-line (1- end-line)))
+;;               (let ((end-pos (line-end-position)))
+;;                 (buffer-substring-no-properties start-pos end-pos)))))))))
+
 (gptel-tk-define gptel-tk-tool-read-buffer-lines-count (buffer-name &optional start-line count)
   "Read COUNT lines from BUFFER-NAME starting at line START-LINE.
 When START-LINE is nil it defaults to 1.  When COUNT is nil it defaults
@@ -632,6 +670,22 @@ lines)\"."
                       (count-lines (point-min) (point-max))))
           (format "%s." base-message))))))
 
+;; (gptel-tk-define gptel-tk-tool-read-library (library-name)
+;;   "Return the source code of LIBRARY-NAME."
+;;   (let ((file (gptel-tk--with-suppressed-messages
+;;                (find-library-name library-name))))
+;;     (let* ((buffer (gptel-tk--with-suppressed-messages
+;;                     (find-file-noselect file)))
+;;            (original-name (buffer-name buffer))
+;;            (clean-name (replace-regexp-in-string "\\.gz$" "" original-name)))
+;;       ;; Rename buffer to remove .gz extension if present
+;;       (unless (string= original-name clean-name)
+;;         (with-current-buffer buffer
+;;           (rename-buffer clean-name t)))
+;;       ;; Return the buffer contents
+;;       (with-current-buffer buffer
+;;         (buffer-string)))))
+
 (gptel-tk-define gptel-tk-tool-read-info-symbol (symbol-name)
   "Return the contents of the Info node for SYMBOL-NAME.
 SYMBOL-NAME should be the name of an Emacs Lisp function, macro, or
@@ -754,6 +808,16 @@ INCLUDE-COUNTS is non-nil, append the number of lines as \" (N lines)\"."
                            (format "%s: %s (%d lines)" name rel nlines))
                        (format "%s: %s" name rel))))
                  project-file-list "\n"))))
+
+;; (gptel-tk-define gptel-tk-tool-project-find-files (pattern)
+;;   "In the current project, find files whose filenames contain PATTERN.
+;; This function respects .gitignore.  It does not return directories."
+;;   (with-temp-message "Running tool: my_project_find_files"
+;;     (let ((proj (project-current)))
+;;       (if (not proj)
+;;           (error "No project found in the current context.")
+;;         (let ((all-files (project-files proj)))
+;;           (seq-filter (lambda (file) (string-search pattern (file-name-nondirectory file))) all-files))))))
 
 (gptel-tk-define gptel-tk-tool-project-find-files-glob (pattern &optional include-counts)
   "In the current project, find files whose filenames match the glob PATTERN.
@@ -958,10 +1022,10 @@ behavior.  STATS is an ERT stats object containing test results."
     (gptel-tk--ert-format-simple-results stats)))
 
   ;; Detailed output
-  ;; (let* ((aj8/gptel-tk-suppress-logging t)
+  ;; (let* ((gptel-tk-suppress-logging t)
   ;;        (stats (ert-run-tests-batch '(tag unit)))
-  ;;        (summary (aj8/ert-parse-test-results stats))
-  ;;        (detailed-info (aj8/gptel-tk--ert-format-detailed-results stats)))
+  ;;        (summary (gptel-tk--ert-parse-test-results stats))
+  ;;        (detailed-info (gptel-tk--ert-format-detailed-results stats)))
   ;;   ;; Format results for LLM consumption with both summary and details
   ;;   (format "ERT Test Results for %s:\n%s%s"
   ;;           test-name
@@ -1014,6 +1078,31 @@ TEST-NAME is the string name of the ERT test symbol to run."
                      :type string
                      :description "The path to the file to open."))
  :category "buffers")
+
+;; (gptel-make-tool
+;;  :function #'gptel-tk-tool-read-buffer
+;;  :name (gptel-tk--make-tool-name "read_buffer")
+;;  :description "Return the contents of a buffer."
+;;  :args (list '(:name "buffer-name"
+;;                       :type string
+;;                       :description "The name of the buffer to read."))
+
+;; (gptel-make-tool
+;;  :function #'gptel-tk-tool-read-buffer-lines
+;;  :name (gptel-tk--make-tool-name "read_buffer_lines")
+;;  :description (format "Read lines from a buffer; max lines per call: %d. Use chunking for larger ranges. 'start-line' and 'end-line' are optional 1-based line numbers; if 'start-line' is omitted or false, read from the beginning of the buffer. If 'end-line' is omitted or false, read to the end of the buffer." gptel-tk-max-lines)
+;;  :args (list '( :name "buffer-name"
+;;                 :type string
+;;                 :description "The name of the buffer to read the contents of.")
+;;              '( :name "start-line"
+;;                 :type integer
+;;                 :optional t
+;;                 :description "The first line to read from.")
+;;              '( :name "end-line"
+;;                 :type integer
+;;                 :optional t
+;;                 :description "The last line to read to."))
+;;  :category "buffers")
 
 (gptel-make-tool
  :function #'gptel-tk-tool-read-buffer-lines-count
@@ -1333,6 +1422,15 @@ This action requires manual user review. After calling this tool, you must stop 
                      :description "If true, include the number of lines in the result."))
  :category "emacs")
 
+;; (gptel-make-tool
+;;  :function #'gptel-tk-tool-read-library
+;;  :name (gptel-tk--make-tool-name "read_library")
+;;  :description "Return the source code for an Emacs library or package."
+;;  :args (list '(:name "library-name"
+;;                      :type string
+;;                      :description "The name of the library or package to return source code for."))
+;;  :category "emacs")
+
 (gptel-make-tool
  :function #'gptel-tk-tool-read-info-symbol
  :name (gptel-tk--make-tool-name "read_info_symbol")
@@ -1402,6 +1500,15 @@ This action requires manual user review. After calling this tool, you must stop 
                 :optional t
                 :description "If true, append the number of lines to each entry as ' (N lines)'."))
  :category "project")
+
+;; (gptel-make-tool
+;;  :function #'gptel-tk-tool-project-find-files
+;;  :name (gptel-tk--make-tool-name "project_find_files")
+;;  :description "In the current project, recursively find files whose filenames contain pattern. This search is case-sensitive. It does not find directories."
+;;  :args '((:name "pattern"
+;;                 :type string
+;;                 :description "A pattern to match against the filenames in the project."))
+;;  :category "proj
 
 (gptel-make-tool
  :function #'gptel-tk-tool-project-find-files-glob
