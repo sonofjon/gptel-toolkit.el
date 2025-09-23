@@ -338,8 +338,8 @@ equal to LINE-NUMBER."
   (let ((result (gptel-tk-tool-replace-buffer-lines buffer-name line-number line-number content)))
     ;; If the result is an error string (when gptel-tk-catch-errors
     ;; is t), replace the tool name to match this wrapper function
-    (if (and gptel-tk-catch-errors (string-match "^gptel-tk-tool-replace-buffer-lines: " result))
-        (replace-regexp-in-string "^gptel-tk-tool-replace-buffer-lines: " "gptel-tk-tool-replace-buffer-line: " result)
+    (if (and gptel-tk-catch-errors (string-match "^tool: replace_buffer_lines: " result))
+        (replace-regexp-in-string "^tool: replace_buffer_lines: " "tool: replace_buffer_line: "  result)
       ;; If not an error, return success message
       (format "Line %d in buffer '%s' successfully replaced." line-number buffer-name))))
 
@@ -377,8 +377,8 @@ string."
   (let ((result (gptel-tk-tool-edit-buffer-string buffer-name old-string "")))
     ;; If the result is an error string (when gptel-tk-catch-errors
     ;; is t), replace the tool name to match this wrapper function
-    (if (and gptel-tk-catch-errors (string-match "^gptel-tk-tool-edit-buffer-string: " result))
-        (replace-regexp-in-string "^gptel-tk-tool-edit-buffer-string: " "gptel-tk-tool-delete-buffer-string: " result)
+    (if (and gptel-tk-catch-errors (string-match "^tool: edit-buffer-string: " result))
+        (replace-regexp-in-string "^tool: edit-buffer-string: " "tool: delete-buffer-string: " result)
       ;; If not an error, return success message
       (format "String in buffer '%s' successfully deleted." buffer-name))))
 
@@ -390,8 +390,8 @@ string."
   (let ((result (gptel-tk-tool-replace-buffer-line buffer-name line-number "")))
     ;; If the result is an error string (when gptel-tk-catch-errors
     ;; is t), replace the tool name to match this wrapper function
-    (if (and gptel-tk-catch-errors (string-match "^gptel-tk-tool-replace-buffer-line: " result))
-        (replace-regexp-in-string "^gptel-tk-tool-replace-buffer-line: " "gptel-tk-tool-delete-buffer-line: " result)
+    (if (and gptel-tk-catch-errors (string-match "^tool: replace-buffer-line: " result))
+        (replace-regexp-in-string "^tool: replace-buffer-line: " "tool: delete-buffer-line: " result)
       ;; If not an error, return success message
       (format "Line %d in buffer '%s' successfully deleted." line-number buffer-name))))
 
@@ -403,8 +403,8 @@ string."
   (let ((result (gptel-tk-tool-replace-buffer-lines buffer-name start-line end-line "")))
     ;; If the result is an error string (when gptel-tk-catch-errors
     ;; is t), replace the tool name to match this wrapper function
-    (if (and gptel-tk-catch-errors (string-match "^gptel-tk-tool-replace-buffer-lines: " result))
-        (replace-regexp-in-string "^gptel-tk-tool-replace-buffer-lines: " "gptel-tk-tool-delete-buffer-lines: " result)
+    (if (and gptel-tk-catch-errors (string-match "^tool: replace-buffer-lines: " result))
+        (replace-regexp-in-string "^tool: replace-buffer-lines: " "tool: delete-buffer-lines: " result)
       ;; If not an error, return success message
       (format "Line range %d-%d in buffer '%s' successfully deleted."
               start-line end-line buffer-name))))
