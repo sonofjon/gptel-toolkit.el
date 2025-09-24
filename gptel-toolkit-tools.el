@@ -60,11 +60,6 @@ specific tools from the complete set of available GPTel tools."
 
 ;;; Tool definitions
 
-;; TODO: Add tools:
-;;         Function and variable search tools based on `apropos',
-;;         `apropos-command', `apropos-variable'? Note that the LLM can do
-;;         all this stuff already with with the eval expression tool.
-
 ;; Buffers
 
 (gptel-tk-define gptel-tk-tool-buffer-search-regexp (buffer-name regexp &optional include-columns)
