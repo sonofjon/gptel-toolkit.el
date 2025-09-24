@@ -198,11 +198,12 @@ work."
         (unless (re-search-forward (concat "^(.*\\b" (regexp-quote definition-name) "\\b") nil t)
           (error "Definition '%s' not found in buffer" definition-name))
         ;; Move to beginning of definition
-        (beginning-of-defun)
-        (let ((beg (point)))
-          ;; Move to end of definition
-          (end-of-defun)
-          (buffer-substring-no-properties beg (point)))))))
+        (let ((transient-mark-mode nil))   ; suppress "Mark set" messages
+          (beginning-of-defun)
+          (let ((beg (point)))
+            ;; Move to end of definition
+            (end-of-defun)
+            (buffer-substring-no-properties beg (point))))))))
 
 (gptel-tk-define gptel-tk-tool-list-buffers (&optional include-counts)
   "Return a newline-separated string of open file-backed buffers.
