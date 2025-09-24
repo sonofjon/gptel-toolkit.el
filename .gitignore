@@ -1,0 +1,3 @@
+# Override global .vscode/ exclusion for this project
+!.vscode/
+!.vscode/**

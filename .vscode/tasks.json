@@ -1,0 +1,17 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Run all unit tests",
+			"type": "shell",
+			"command": "emacs -Q --batch --eval \"(package-initialize)\" --eval \"(push \\\"${workspaceFolder}\\\" load-path)\" -l test/gptel-toolkit-test.el --eval \"(setq debug-on-error t)\" --eval \"(ert-run-tests-batch-and-exit '(tag unit))\"",
+			"group": "test"
+		},
+		{
+			"label": "Run unit test test-gptel-tk-open-file-in-buffer",
+			"type": "shell",
+			"command": "emacs -Q --batch --eval \"(package-initialize)\" --eval \"(push \\\"${workspaceFolder}\\\" load-path)\" -l test/gptel-toolkit-test.el --eval \"(setq debug-on-error t)\" --eval \"(ert-run-tests-batch-and-exit 'test-gptel-tk-open-file-in-buffer)\"",
+			"group": "test"
+		}
+	]
+}
