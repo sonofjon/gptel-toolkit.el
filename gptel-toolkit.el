@@ -44,7 +44,7 @@
 
 (defun gptel-tk--is-toolkit-tool-p (tool)
   "Return non-nil if TOOL is a gptel-toolkit tool.
-A toolkit tool is one whose function name starts with 'gptel-tk-tool-'."
+A toolkit tool is one whose function name starts with \='gptel-tk-tool-\='."
   (let ((func (gptel-tool-function tool)))
     (and func
          (symbolp func)
@@ -72,7 +72,7 @@ Populates `gptel-tools' with toolkit tools from `gptel--known-tools',
 excluding any tools listed in `gptel-tk-excluded-tools'.
 
 This function affects tools whose function names start with
-'gptel-tk-tool-'.  This includes the built-in toolkit tools, and any
+\='gptel-tk-tool-\='.  This includes the built-in toolkit tools, and any
 custom tools that users have created using the same naming
 convention. Custom tools created with `gptel-tk-define' using other
 names are unaffected."
@@ -90,10 +90,10 @@ names are unaffected."
 ;;;###autoload
 (defun gptel-tk-disable-builtin-tools ()
   "Disable all built-in tools for gptel use.
-Removes all tools whose function names start with 'gptel-tk-tool-' from
-the gptel tools list. This includes the built-in toolkit tools and any
-custom tools that use the same naming convention.  Custom tools created
-with `gptel-tk-define' using other names are unaffected."
+Removes all tools whose function names start with \='gptel-tk-tool-\='
+from the gptel tools list.  This includes the built-in toolkit tools and
+any custom tools that use the same naming convention.  Custom tools
+created with `gptel-tk-define' using other names are unaffected."
   (interactive)
   (let ((removed-count (gptel-tk--filter-toolkit-tools (lambda (_tool) t))))
     (message "gptel-toolkit: %d built-in tools disabled" removed-count)))

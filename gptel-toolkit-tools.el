@@ -5,7 +5,7 @@
 ;;; Commentary:
 ;;
 ;; This file contains 35+ tool implementations for gptel-toolkit, organized
-;; into five categories. All tools are defined using the gptel-tk-define
+;; into five categories.  All tools are defined using the gptel-tk-define
 ;; macro and registered with gptel.
 ;;
 ;; Tool Categories:
@@ -449,11 +449,12 @@ a plist with the following keys:
                           characters.
 - :new-string (string) -- The replacement text to insert.
 
-EDIT-TYPE can be 'line or 'string.  For 'line edits the :old-string is
-compared against the entire line; when equal the entire line is replaced
-with :new-string.  For 'string edits the function searches from the
-beginning of the specified line to the end of the line for the first
-occurrence of :old-string and replaces that occurrence with :new-string.
+EDIT-TYPE can be \='line or \='string.  For \='line edits the
+:old-string is compared against the entire line; when equal the entire
+line is replaced with :new-string.  For \='string edits the function
+searches from the beginning of the specified line to the end of the line
+for the first occurrence of :old-string and replaces that occurrence
+with :new-string.
 
 Edits are applied in descending order of :line-number to avoid shifting
 subsequent line numbers."
@@ -538,14 +539,15 @@ subsequent line numbers."
   "Review a list of buffer edits in Ediff.
 
 Creates a temporary buffer containing the content of the original buffer
-BUFFER-NAME, applies the proposed edits, and then launches an Ediff session
-to visually compare the original buffer against the edited version.
+BUFFER-NAME, applies the proposed edits, and then launches an Ediff
+session to visually compare the original buffer against the edited
+version.
 
 BUFFER-EDITS is a list of property lists with the same shape as
 described for `gptel-tk--apply-buffer-edits': each edit should contain
 :line-number, :old-string, and :new-string.
 
-EDIT-TYPE can be 'line or 'string, as described in
+EDIT-TYPE can be \='line or \='string, as described in
 `gptel-tk--apply-buffer-edits'."
   (when buffer-edits
     ;; Only proceed if we have edits to apply
@@ -1029,7 +1031,7 @@ behavior.  STATS is an ERT stats object containing test results."
     (string-trim (buffer-substring-no-properties (point-min) (point-max)))))
 
 (gptel-tk-define gptel-tk-tool-ert-list-unit-tests ()
-  "List names of loaded ERT tests tagged 'unit'."
+  "List names of loaded ERT tests tagged \='unit\='."
   (require 'ert)
   (let* ((tests (ert-select-tests '(tag unit) t))
          (names (mapcar #'ert-test-name tests)))
@@ -1038,7 +1040,7 @@ behavior.  STATS is an ERT stats object containing test results."
       "No loaded ERT unit tests found.")))
 
 (gptel-tk-define gptel-tk-tool-ert-run-unit ()
-  "Run all ERT tests tagged 'unit'."
+  "Run all ERT tests tagged \='unit\='."
   (require 'ert)
 
   ;; Run tests synchronously and capture results

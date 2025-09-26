@@ -2304,7 +2304,7 @@ arguments.
 The return value of the tool is displayed as a message.  This is useful
 for quick, manual testing and inspection of any tool.
 
-TOOL-NAME is the name of the tool to run (e.g., 'list_buffers')."
+TOOL-NAME is the name of the tool to run (e.g., `list_buffers')."
   (interactive
    (let* ((choices (mapcar (lambda (tool)
                              (format "%s [%s]"
