@@ -357,7 +357,8 @@ The text is inserted at the beginning of the specified line."
            (t
             (let ((transient-mark-mode nil))   ; suppress "Mark set" messages
               (goto-char (point-min)))
-            (replace-string old-string new-string)
+            (search-forward old-string)
+            (replace-match new-string nil t)
             (format "String in buffer '%s' successfully replaced." buffer-name))))))))
 
 (gptel-tk-define gptel-tk-tool-replace-buffer-line (buffer-name line-number content)
@@ -1022,9 +1023,10 @@ behavior.  STATS is an ERT stats object containing test results."
           ;; Only show tests with unexpected results (failed tests)
           (when (and result (not (ert-test-result-expected-p test result)))
             ;; Create ewoc entry and use ERT's own print function
-            (let ((entry (make-ert--ewoc-entry
-                          :test test
-                          :hidden-p nil)))
+            ;; (let ((entry (make-ert--ewoc-entry
+            ;;               :test test
+            ;;               :hidden-p nil)))
+            (let ((entry (make-ert--ewoc-entry test nil)))  ; fix compiler warning
               (ert--print-test-for-ewoc entry))
             (insert "\n")))))
 

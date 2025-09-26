@@ -1259,7 +1259,8 @@ Optional keyword parameters:
          ;; Test empty edits behavior (should not start Ediff):
          (let ((ediff-called nil))
            (cl-letf (((symbol-function 'ediff-buffers)
-                      (lambda (b1 b2 &optional startup-hooks) (setq ediff-called t))))
+                      (lambda (_b1 _b2 &optional _startup-hooks)
+                        (setq ediff-called t))))
              (gptel-tk-tool-apply-buffer-string-edits-with-review "*test-review*" '())
              (gptel-tk-tool-apply-buffer-string-edits-with-review "*test-review*" nil))
            ;; Assert that Ediff was not called for empty/nil edits
@@ -1311,7 +1312,8 @@ Optional keyword parameters:
          ;; Test empty edits behavior (should not start Ediff):
          (let ((ediff-called nil))
            (cl-letf (((symbol-function 'ediff-buffers)
-                      (lambda (b1 b2 &optional startup-hooks) (setq ediff-called t))))
+                      (lambda (_b1 _b2 &optional _startup-hooks)
+                        (setq ediff-called t))))
              (gptel-tk-tool-apply-buffer-line-edits-with-review "*test-review*" '())
              (gptel-tk-tool-apply-buffer-line-edits-with-review "*test-review*" nil))
            ;; Assert that Ediff was not called for empty/nil edits
@@ -1650,6 +1652,7 @@ Optional keyword parameters:
 (ert-deftest test-gptel-tk-eval-buffer ()
   "Test `gptel-tk-tool-eval-buffer'."
   :tags '(unit emacs)
+  (defvar test-eval-result nil)
   (with-temp-buffer-with-content
    "*test-eval-buffer*" "(setq test-eval-result 42)\n(+ 1 2 3)"
 
@@ -2112,8 +2115,7 @@ Ensures that every registered tool definition has the required
 properties and that all argument definitions follow the expected schema."
   :tags '(integration tools)
   (dolist (tool-def gptel-tools)
-    (let ((tool-name (gptel-tool-name tool-def))
-          (args (gptel-tool-args tool-def)))
+    (let ((args (gptel-tool-args tool-def)))
 
       ;; 1. Validate required top-level tool properties
       (should (gptel-tool-function tool-def))
@@ -2156,7 +2158,7 @@ properties and that all argument definitions follow the expected schema."
 
           ;; 4.3 Validate that only known keys are used
           (let ((valid-keys '(:name :type :description :optional :items :properties))
-                (arg-keys (cl-loop for (key value) on arg by #'cddr collect key)))
+                (arg-keys (cl-loop for (key _value) on arg by #'cddr collect key)))
             (dolist (key arg-keys)
               (should (memq key valid-keys))))
 
