@@ -44,6 +44,40 @@
 (require 'gptel-toolkit-core)
 (require 'gptel)
 
+;;; Function Declarations
+
+;; Backtrace functions
+(declare-function backtrace-to-string "backtrace" (backtrace))
+
+;; ERT functions
+(declare-function ert--print-test-for-ewoc "ert" (ewoc-entry))
+(declare-function ert--stats-failed-expected "ert" (stats))
+(declare-function ert--stats-failed-unexpected "ert" (stats))
+(declare-function ert--stats-passed-expected "ert" (stats))
+(declare-function ert--stats-passed-unexpected "ert" (stats))
+(declare-function ert--stats-skipped "ert" (stats))
+(declare-function ert--stats-test-results "ert" (stats))
+(declare-function ert--stats-tests "ert" (stats))
+(declare-function ert-select-tests "ert" (selector universe))
+(declare-function ert-stats-total "ert" (stats))
+(declare-function ert-test-name "ert" (test))
+(declare-function ert-test-result-expected-p "ert" (test result))
+(declare-function ert-test-result-should-forms "ert" (test-result))
+(declare-function ert-test-result-with-condition-backtrace "ert" (test-result))
+(declare-function ert-test-result-with-condition-condition "ert" (test-result))
+(declare-function ert-test-result-with-condition-p "ert" (test-result))
+(declare-function make-ert--ewoc-entry "ert" (&key test hidden-p))
+
+;; Info functions
+(declare-function Info-goto-node "info" (node &optional no-going-back tryfile))
+
+;; Library functions
+(declare-function find-library-name "find-func" (library))
+
+;; Project functions
+(declare-function project-files "project" (project &optional dirs))
+(declare-function project-root "project" (project))
+
 ;;; Customization
 
 (defcustom gptel-tk-max-lines 100

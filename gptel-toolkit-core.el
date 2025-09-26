@@ -20,6 +20,12 @@
 ;;
 ;;; Code:
 
+;;; Function Declarations
+
+;; gptel functions
+(declare-function gptel-tool-function "gptel" (tool))
+(declare-function gptel-tool-name "gptel" (tool))
+
 ;;; Configuration Variables
 
 (defcustom gptel-tk-log-buffer "*gptel-tool-log*"

@@ -15,6 +15,12 @@
 (require 'gptel-toolkit-core)
 (require 'gptel-toolkit-tools)
 
+;;;; Function Declarations
+
+;; Test functions that are defined dynamically during testing
+(declare-function test-func-one "test" (x))
+(declare-function test-func-two "test" (y))
+
 ;;;; Helper functions
 
 (defun gptel-tk--ediff-cleanup-buffers ()
