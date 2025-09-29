@@ -1159,7 +1159,7 @@ TEST-NAME is the string name of the ERT test symbol to run."
 (gptel-make-tool
  :function #'gptel-tk-tool-read-buffer-definition
  :name (gptel-tk--make-tool-name "read_buffer_definition")
- :description "Return the code of a given top-level definition (function, macro, variable, etc.) from a specified buffer. Uses Emacs's structural parsing to extract complete code blocks, including any unsaved changes. Works language-agnostically wherever `beginning-of-defun` and `end-of-defun` works."
+ :description "Return the code of a given top-level definition (function, macro, variable, etc.) from a specified buffer. Uses Emacs's structural parsing to extract complete code blocks, including any unsaved changes. Prefer this for user code to read the exact text in the buffer and to avoid stale reads from the loaded definition."
  :args (list '(:name "buffer-name"
                      :type string
                      :description "The name of the buffer containing the definition.")
@@ -1438,7 +1438,7 @@ This action requires manual user review. After calling this tool, you must stop 
 (gptel-make-tool
  :function #'gptel-tk-tool-read-function
  :name (gptel-tk--make-tool-name "read_function")
- :description "Return the code of a given Emacs Lisp function."
+ :description "Return the code of an Emacs Lisp function currently registered in memory (the evaluated definition), not from buffers. Use only for functions that are certain not to have been modified by the user (for example, built-in libraries such as find-file-noselect). Using this on user code risks reading a stale definition if there are buffer edits or unsaved changes; for user code prefer 'read_buffer_definition'."
  :args (list '(:name "function-name"
                      :type string
                      :description "The name of the function to return the code for."))
