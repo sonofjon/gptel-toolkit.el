@@ -1453,6 +1453,7 @@ This action requires manual user review. After calling this tool, you must stop 
                      :description "The name of the library or package to load into a buffer.")
              '(:name "include-counts"
                      :type boolean
+                     :optional t
                      :description "If true, include the number of lines in the result."))
  :category "emacs")
 
