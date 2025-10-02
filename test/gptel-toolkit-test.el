@@ -1517,7 +1517,11 @@ Optional keyword parameters:
     (when (get-buffer "find-func.el")
       (kill-buffer "find-func.el"))
     (when (get-buffer "find-func.el.gz")
-      (kill-buffer "find-func.el.gz"))))
+      (kill-buffer "find-func.el.gz"))
+    (when (get-buffer "subr.el")
+      (kill-buffer "subr.el"))
+    (when (get-buffer "subr.el.gz")
+      (kill-buffer "subr.el.gz"))))
 
 (ert-deftest test-gptel-tk-load-library ()
   "Test `gptel-tk-tool-load-library'."
