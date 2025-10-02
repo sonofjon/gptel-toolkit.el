@@ -26,6 +26,10 @@
 (declare-function gptel-tool-function "gptel" (tool))
 (declare-function gptel-tool-name "gptel" (tool))
 
+;; gptel variables (defined in gptel.el)
+(defvar gptel-tools nil "Defined in gptel.el.")
+(defvar gptel--known-tools nil "Defined in gptel.el.")
+
 ;;; Configuration Variables
 
 (defcustom gptel-tk-log-buffer "*gptel-tool-log*"
