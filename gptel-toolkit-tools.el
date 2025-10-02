@@ -1150,7 +1150,7 @@ TEST-NAME is the string name of the ERT test symbol to run."
                 :optional t
                 :description "The 1-based line number to start reading from (default is 1).")
              (list :name "count"
-                   :type 'integer
+                   :type integer
                    :optional t
                    :description (format "The number of lines to read (must be <= %d)."
                                         gptel-tk-max-lines)))
