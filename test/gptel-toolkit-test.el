@@ -1700,14 +1700,14 @@ Optional keyword parameters:
    ;; === SUCCESS CASES ===
 
    ;; Test basic function evaluation functionality:
-   (let ((result (gptel-tk-tool-eval-function "test-func-one" "*test-eval-function*")))
+   (let ((result (gptel-tk-tool-eval-function "*test-eval-function*" "test-func-one")))
      ;; Assert that the function evaluation returns a success message
      (should (string-equal result "Successfully evaluated function test-func-one from buffer *test-eval-function*."))
      ;; Assert that the function is now defined and callable
      (should (eq (test-func-one 5) 10)))
 
    ;; Test evaluating second function:
-   (let ((result (gptel-tk-tool-eval-function "test-func-two" "*test-eval-function*")))
+   (let ((result (gptel-tk-tool-eval-function "*test-eval-function*" "test-func-two")))
      ;; Assert that the function evaluation returns a success message
      (should (string-equal result "Successfully evaluated function test-func-two from buffer *test-eval-function*."))
      ;; Assert that the function is now defined and callable
@@ -1719,10 +1719,10 @@ Optional keyword parameters:
   ;; Mode 1: tool re-signals the error
   (let ((gptel-tk-catch-errors nil))
     ;; Assert that an error is signaled when buffer not found
-    (should-error (gptel-tk-tool-eval-function "some-func" "*non-existent-buffer*") :type 'error))
+    (should-error (gptel-tk-tool-eval-function "*non-existent-buffer*" "some-func") :type 'error))
   ;; Mode 2: tool returns the error as a string
   (let ((gptel-tk-catch-errors t))
-    (let ((result (gptel-tk-tool-eval-function "some-func" "*non-existent-buffer*")))
+    (let ((result (gptel-tk-tool-eval-function "*non-existent-buffer*" "some-func")))
       ;; Assert that the error message describes buffer not found
       (should (string-match "Buffer '\\*non-existent-buffer\\*' not found" result))))
 
@@ -1732,10 +1732,10 @@ Optional keyword parameters:
    ;; Mode 1: tool re-signals the error
    (let ((gptel-tk-catch-errors nil))
      ;; Assert that an error is signaled when function not found
-     (should-error (gptel-tk-tool-eval-function "non-existent-func" "*test-eval-no-func*") :type 'error))
+     (should-error (gptel-tk-tool-eval-function "*test-eval-no-func*" "non-existent-func") :type 'error))
    ;; Mode 2: tool returns the error as a string
    (let ((gptel-tk-catch-errors t))
-     (let ((result (gptel-tk-tool-eval-function "non-existent-func" "*test-eval-no-func*")))
+     (let ((result (gptel-tk-tool-eval-function "*test-eval-no-func*" "non-existent-func")))
        ;; Assert that the error message describes function not found
        (should (string-match "Function 'non-existent-func' not found" result)))))
 
@@ -1745,10 +1745,10 @@ Optional keyword parameters:
    ;; Mode 1: tool re-signals the error
    (let ((gptel-tk-catch-errors nil))
      ;; Assert that an error is signaled for malformed function
-     (should-error (gptel-tk-tool-eval-function "broken-func" "*test-eval-bad-func*") :type 'error))
+     (should-error (gptel-tk-tool-eval-function "*test-eval-bad-func*" "broken-func") :type 'error))
    ;; Mode 2: tool returns the error as a string
    (let ((gptel-tk-catch-errors t))
-     (let ((result (gptel-tk-tool-eval-function "broken-func" "*test-eval-bad-func*")))
+     (let ((result (gptel-tk-tool-eval-function "*test-eval-bad-func*" "broken-func")))
        ;; Assert that the error message indicates evaluation failure
        (should (string-match "tool: eval_function:" result))))))
 

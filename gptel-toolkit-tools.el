@@ -786,7 +786,7 @@ This evaluates the current buffer content, including any unsaved changes."
       (eval-buffer))
     (format "Successfully evaluated all code in buffer %s." buffer-name)))
 
-(gptel-tk-define gptel-tk-tool-eval-function (function-name buffer-name)
+(gptel-tk-define gptel-tk-tool-eval-function (buffer-name function-name)
   "Evaluate FUNCTION-NAME in BUFFER-NAME.
 This finds the function definition in the buffer and evaluates it,
 including any unsaved changes."
@@ -1497,12 +1497,12 @@ This action requires manual user review. After calling this tool, you must stop 
  :function #'gptel-tk-tool-eval-function
  :name (gptel-tk--make-tool-name "eval_function")
  :description "Evaluate a function definition from a buffer. This finds the function definition in the buffer and evaluates it, including any unsaved changes."
- :args '((:name "function-name"
+ :args '((:name "buffer-name"
                 :type string
-                :description "The name of the function to evaluate.")
-         (:name "buffer-name"
+                :description "The name of the buffer containing the function.")
+         (:name "function-name"
                 :type string
-                :description "The name of the buffer containing the function."))
+                :description "The name of the function to evaluate."))
  :confirm t
  :category "emacs")
 
