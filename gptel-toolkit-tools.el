@@ -66,7 +66,7 @@
 (declare-function ert-test-result-with-condition-backtrace "ert" (test-result))
 (declare-function ert-test-result-with-condition-condition "ert" (test-result))
 (declare-function ert-test-result-with-condition-p "ert" (test-result))
-(declare-function make-ert--ewoc-entry "ert" (&key test hidden-p))
+(declare-function make-ert--ewoc-entry "ert")
 
 ;; Info functions
 (declare-function Info-goto-node "info" (node &optional no-going-back tryfile))
@@ -1023,10 +1023,8 @@ behavior.  STATS is an ERT stats object containing test results."
           ;; Only show tests with unexpected results (failed tests)
           (when (and result (not (ert-test-result-expected-p test result)))
             ;; Create ewoc entry and use ERT's own print function
-            ;; (let ((entry (make-ert--ewoc-entry
-            ;;               :test test
-            ;;               :hidden-p nil)))
-            (let ((entry (make-ert--ewoc-entry test nil)))  ; fix compiler warning
+            ;; (let ((entry (make-ert--ewoc-entry test nil)))
+            (let ((entry (make-ert--ewoc-entry :test test :hidden-p nil)))
               (ert--print-test-for-ewoc entry))
             (insert "\n")))))
 
