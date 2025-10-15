@@ -361,6 +361,8 @@ The text is inserted at the beginning of the specified line."
             (replace-match new-string nil t)
             (format "String in buffer '%s' successfully replaced." buffer-name))))))))
 
+;; TOOD: Wrapper function probably don't work with non-empty prefix variable
+;; TODO: These return the wrong string/error
 (gptel-tk-define gptel-tk-tool-replace-buffer-line (buffer-name line-number content)
   "Replace line LINE-NUMBER in file BUFFER-NAME with CONTENT.
 This wrapper function delegates replacement to
